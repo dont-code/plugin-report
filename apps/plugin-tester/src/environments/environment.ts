@@ -4,6 +4,8 @@
 
 export const environment = {
   production: false,
+  webSocketUrl:'',
+  storeApiUrl: 'http://localhost:8084/data'
 };
 
 /*
