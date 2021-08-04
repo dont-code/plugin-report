@@ -1,0 +1,122 @@
+[{
+  "name": "Test Seed Field",
+  "sequence": [
+    {
+      "position": "creation/entities/a",
+      "type": "ADD",
+      "value": {
+        "name": "Seed Field"
+      }
+    },{
+      "position": "creation/entities/a/fields",
+      "type": "ADD",
+      "value": {
+        "aa": {
+          "name": "Test",
+          "type": "Seed Field"
+        }
+      }
+    }]
+},{
+  "name": "Test Seeded Entity",
+  "type": "ADD",
+  "position": "creation/entities/b",
+  "value": {
+    "name": "Seeded",
+    "seed": "Maybe"
+  }
+
+},{
+  "name": "Change App Name",
+  "type": "ADD",
+  "position": "creation/name",
+  "value": "New Name"
+},
+  {
+    "name": "Create Entity A",
+    "type": "ADD",
+    "position": "creation/entities/a",
+    "value": {
+      "name":"A Name"
+    }
+  },
+  {
+    "name": "Change Entity A Name",
+    "type": "UPDATE",
+    "position": "creation/entities/a/name",
+    "value": "An Updated Name"
+  },
+  {
+    "name": "Move Entity b",
+    "type": "MOVE",
+    "position": "creation/entities/b",
+    "value": "a"
+  },
+  {
+    "name": "Create String Field",
+    "type": "ADD",
+    "position": "creation/entities/a/fields/a",
+    "value": {
+      "name": "fieldString",
+      "type": "Text"
+    }
+  },
+  {
+    "name": "Set Field Name",
+    "type": "UPDATE",
+    "position": "creation/entities/a/fields/b/name",
+    "value": "fieldName"
+  },
+  {
+    "name": "Create Complete Entity A",
+    "sequence": [
+      {
+        "position": "creation/entities/a/name",
+        "type": "ADD",
+        "value": "A Name"
+      },
+      {
+        "position": "creation/entities/a/fields/a",
+        "type": "ADD",
+        "value": {
+          "name": "id",
+          "type": "Text"
+        }
+      },
+      {
+        "position": "creation/entities/a/fields/b",
+        "type": "ADD",
+        "value": {
+          "name": "check",
+          "type": "Boolean"
+        }
+      },
+      {
+        "position": "creation/entities/a/fields/c",
+        "type": "ADD",
+        "value": {
+          "name": "count",
+          "type": "Number"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Move Field b",
+    "type": "MOVE",
+    "position": "creation/entities/a/fields/b",
+    "value": "a"
+  },
+  {
+    "name": "Move Field a",
+    "type": "MOVE",
+    "position": "creation/entities/a/fields/a",
+    "value": "c"
+  },
+  {
+    "name": "Empty Application",
+    "type": "RESET",
+    "position": "creation",
+    "value": null
+  }
+]

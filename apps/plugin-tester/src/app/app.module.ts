@@ -7,6 +7,7 @@ import {SandboxModule} from "@dontcode/sandbox";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {environment} from "../environments/environment";
 import {HttpClientModule} from "@angular/common/http";
+import {SeedModule} from "@dontcode/seed";
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,8 +25,10 @@ import {HttpClientModule} from "@angular/common/http";
       webSocketUrl: environment.webSocketUrl,
       indexedDbName: 'Seed Plugin Tester',
       applicationName: 'Seed Plugin Tester',
-      //theme:'orange'
-    })
+      theme:'orange',
+      templateFileUrl: 'assets/dev/templates.json'
+    }),
+    SeedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
