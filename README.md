@@ -1,105 +1,58 @@
+![image](https://dont-code.net/assets/logo-shadow-squared.png)
+## What is it for ?
 
+This project allows developers to quickstart their development of a Plugin for the  [Dont-code](https://dont-code.net) no-code / low-code platform.
+It provides example for two kinds of plugins:
+- Seed Field adds a new type of field to the platform.
+- Seeded Entity shows how to modify the Dont-code model and manage the updated display.
 
-# Dontcode
+## What is it ?
+It contains a simple but complete repository you can fork to start your development. That includes:
+1. A Nx monorepo with a library [seed](libs/seed) containing the two plugins.
+2. An Application [plugin-tester](apps/plugin-tester) loading these plugins automatically and allowing you to test and debug them.
+3. Unit tests setup with Jest for each of these plugins.
+4. End 2 end tests example [plugin-tester-e2e](apps/plugin-tester-e2e) using Cypress.
+5. Github Action scripts to build and deploy the plugins automatically [Workflows](.github/workflows).
 
-This project was generated using [Nx](https://nx.dev).
+## How to use it ?
 
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="450"></p>
+To develop your own plugins using this seed repository, simply:
+1. Fork this repository in github.
+2. Install it, run some tests and the tester application to make sure it is working.
+3. If you want to create a plugin for a new Field, rename and modify the [SeedField component](libs/seed/src/lib/preview/seed-field).
+4. If you want to create any other plugin types, rename and modify the [SeedEntity component](libs/seed/src/lib/preview/seeded-entity).
+5. Updates the configuration to be injected to the Dont-code platform here [SeedPlugin](libs/seed/src/lib/declaration/seed-plugin.ts)
+6. Ensure the plugin tester adds the updated module name of your plugin [AppModule](apps/plugin-tester/src/app/app.module.ts)
+7. Modify the templates loaded by the plugin tester to ease usage of your plugin [templates.json](apps/plugin-tester/src/assets/dev/templates.json)
+8. Run the plugin-tester application and debug your plugins there
+9. Modify and enhance the end 2 end tests of your plugins [seed.spec.ts](apps/plugin-tester-e2e/src/integration/seed.spec.ts)
+10. Modify the Github Action scripts [to build](.github/workflows/dev-build.yml), [and deploy](./.github/workflows/release.yml) your plugins
+11. Test in the Dont-code Buidler and Previewer applications
 
-🔎 **Smart, Extensible Build Framework**
+## How to build it ?
+This project is a standard Angular - npm project, so the usual commands apply:
 
-## Quick Start & Documentation
+1. Installing
 
-[Nx Documentation](https://nx.dev/angular)
+`npm install`
 
-[10-minute video showing all Nx features](https://nx.dev/getting-started/intro)
+3. Running the tester application
 
-[Interactive Tutorial](https://nx.dev/tutorial/01-create-application)
+`nx run plugin-tester:serve`
 
-## Adding capabilities to your workspace
+and point your browser to http://localhost:4200
 
-Nx supports many plugins which add capabilities for developing different types of applications and different tools.
+3. Running unit tests
 
-These capabilities include generating applications, libraries, etc as well as the devtools to test, and build projects as well.
+  `nx run seed:test`
 
-Below are our core plugins:
+4. Running Cypress End to end tests
 
-- [Angular](https://angular.io)
-  - `ng add @nrwl/angular`
-- [React](https://reactjs.org)
-  - `ng add @nrwl/react`
-- Web (no framework frontends)
-  - `ng add @nrwl/web`
-- [Nest](https://nestjs.com)
-  - `ng add @nrwl/nest`
-- [Express](https://expressjs.com)
-  - `ng add @nrwl/express`
-- [Node](https://nodejs.org)
-  - `ng add @nrwl/node`
+  `nx run plugin-tester-e2e:e2e`
 
-There are also many [community plugins](https://nx.dev/community) you could add.
+5. Build and deploy
 
-## Generate an application
+  Just commit to Development or Release branch, the Github actions scripts will take care of it
+## Thank you
 
-Run `ng g @nrwl/angular:app my-app` to generate an application.
-
-> You can use any of the plugins above to generate applications as well.
-
-When using Nx, you can create multiple applications and libraries in the same workspace.
-
-## Generate a library
-
-Run `ng g @nrwl/angular:lib my-lib` to generate a library.
-
-> You can also use any of the plugins above to generate libraries as well.
-
-Libraries are shareable across libraries and applications. They can be imported from `@dontcode/mylib`.
-
-## Development server
-
-Run `ng serve my-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng g component my-component --project=my-app` to generate a new component.
-
-## Build
-
-Run `ng build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test my-app` to execute the unit tests via [Jest](https://jestjs.io).
-
-Run `nx affected:test` to execute the unit tests affected by a change.
-
-## Running end-to-end tests
-
-Run `ng e2e my-app` to execute the end-to-end tests via [Cypress](https://www.cypress.io).
-
-Run `nx affected:e2e` to execute the end-to-end tests affected by a change.
-
-## Understand your workspace
-
-Run `nx dep-graph` to see a diagram of the dependencies of your projects.
-
-## Further help
-
-Visit the [Nx Documentation](https://nx.dev/angular) to learn more.
-
-
-
-
-
-
-## ☁ Nx Cloud
-
-### Distributed Computation Caching & Distributed Task Execution
-
-<p style="text-align: center;"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-cloud-card.png"></p>
-
-Nx Cloud pairs with Nx in order to enable you to build and test code more rapidly, by up to 10 times. Even teams that are new to Nx can connect to Nx Cloud and start saving time instantly.
-
-Teams using Nx gain the advantage of building full-stack applications with their preferred framework alongside Nx’s advanced code generation and project dependency graph, plus a unified experience for both frontend and backend developers.
-
-Visit [Nx Cloud](https://nx.app/) to learn more.
+This project was generated using [Nx](https://nx.dev), visit the [Nx Documentation](https://nx.dev/angular) to learn more.
