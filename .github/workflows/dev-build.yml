@@ -30,26 +30,14 @@ jobs:
       - name: Install
         run: |
           npm --version
-          npm install @dontcode/core@latest --no-optional
+          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
           npm ci
       - name: Build
         run: |
-          npm run nx run common:build -- --prod
-          npm run nx run sandbox:build -- --prod
-          npm run nx run basic:build -- --prod
-          npm run nx run screen:build -- --prod
-          npm run nx run fields:build -- --prod
-#      - uses: actions/upload-artifact@v1
-#        with:
-#          name: distribution
-#          path: node/dist/libs/core
+          npm run nx run seed:build -- --prod
       - name: Unit tests
         run: |
-          npm run nx run common:test
-          npm run nx run sandbox:test
-          npm run nx run screen:test
-          npm run nx run basic:test
-          npm run nx run fields:test
+          npm run nx run seed:test
           npm run nx run plugin-tester:test
       - name: E2E Tests on ${{matrix.browser}}
         run: |
