@@ -5,9 +5,12 @@ import { SeededEntityComponent } from './preview/seeded-entity/seeded-entity.com
 import {SeedPlugin} from "./declaration/seed-plugin";
 import { dtcde } from '@dontcode/core';
 import {PluginCommonModule} from '@dontcode/plugin-common';
+import {InputTextModule} from "primeng/inputtext";
+import {ReactiveFormsModule} from "@angular/forms";
+import {DropdownModule} from "primeng/dropdown";
 
 @NgModule({
-  imports: [CommonModule, PluginCommonModule],
+    imports: [CommonModule, PluginCommonModule, ReactiveFormsModule, DropdownModule],
   declarations: [
     SeedFieldComponent,
     SeededEntityComponent

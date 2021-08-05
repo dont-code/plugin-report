@@ -8,6 +8,7 @@ describe('plugin-tester', () => {
     cy.login('my-email@something.com', 'myPassword');
 
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome to plugin-tester!');
+    getGreeting().contains('Seed Plugin Tester');
   });
+
 });

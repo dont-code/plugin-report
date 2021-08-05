@@ -20,63 +20,23 @@
 },{
   "name": "Test Seeded Entity",
   "type": "ADD",
-  "position": "creation/entities/b",
+  "position": "creation/entities/a",
   "value": {
     "name": "Seeded",
     "seed": "Maybe"
   }
 
 },{
-  "name": "Change App Name",
-  "type": "ADD",
-  "position": "creation/name",
-  "value": "New Name"
-},
-  {
-    "name": "Create Entity A",
-    "type": "ADD",
-    "position": "creation/entities/a",
-    "value": {
-      "name":"A Name"
-    }
-  },
-  {
-    "name": "Change Entity A Name",
-    "type": "UPDATE",
-    "position": "creation/entities/a/name",
-    "value": "An Updated Name"
-  },
-  {
-    "name": "Move Entity b",
-    "type": "MOVE",
-    "position": "creation/entities/b",
-    "value": "a"
-  },
-  {
-    "name": "Create String Field",
-    "type": "ADD",
-    "position": "creation/entities/a/fields/a",
-    "value": {
-      "name": "fieldString",
-      "type": "Text"
-    }
-  },
-  {
-    "name": "Set Field Name",
-    "type": "UPDATE",
-    "position": "creation/entities/a/fields/b/name",
-    "value": "fieldName"
-  },
-  {
-    "name": "Create Complete Entity A",
+    "name": "Test Other Entity",
     "sequence": [
       {
-        "position": "creation/entities/a/name",
+        "position": "creation/entities/b/name",
         "type": "ADD",
-        "value": "A Name"
+        "value": "Not Seeded",
+        "seed": "No"
       },
       {
-        "position": "creation/entities/a/fields/a",
+        "position": "creation/entities/b/fields/a",
         "type": "ADD",
         "value": {
           "name": "id",
@@ -84,7 +44,7 @@
         }
       },
       {
-        "position": "creation/entities/a/fields/b",
+        "position": "creation/entities/b/fields/b",
         "type": "ADD",
         "value": {
           "name": "check",
@@ -92,7 +52,7 @@
         }
       },
       {
-        "position": "creation/entities/a/fields/c",
+        "position": "creation/entities/b/fields/c",
         "type": "ADD",
         "value": {
           "name": "count",

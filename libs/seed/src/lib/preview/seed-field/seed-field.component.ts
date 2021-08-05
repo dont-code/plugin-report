@@ -8,14 +8,23 @@ import { AbstractDynamicComponent, ComponentLoaderService, PossibleTemplateList,
 })
 export class SeedFieldComponent extends AbstractDynamicComponent {
 
-  @ViewChild('inlineView')
+  @ViewChild('inlineView',{static:true})
   private inlineView!: TemplateRef<any>;
 
-  @ViewChild('fullEditView')
+  @ViewChild('fullEditView',{static:true})
   private fullEditView!: TemplateRef<any>;
+
+  seeds:Array<any>;
 
   constructor() {
     super ();
+    this.seeds = [
+      {name: 'Tomato Seed', code: 'Tomato'},
+      {name: 'Rosa Seed', code: 'Rosa'},
+      {name: 'Pea Seed', code: 'Pea'},
+      {name: 'Bean Seed', code: 'Bean'},
+      {name: 'Other Seed', code: 'Other'}
+    ];
   }
 
   providesTemplates (): TemplateList {
