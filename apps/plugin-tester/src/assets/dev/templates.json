@@ -20,7 +20,7 @@
 },{
   "name": "Test Seeded Entity",
   "type": "ADD",
-  "position": "creation/entities/a",
+  "position": "creation/entities/b",
   "value": {
     "name": "Seeded",
     "seed": "Maybe"
@@ -30,13 +30,13 @@
     "name": "Test Other Entity",
     "sequence": [
       {
-        "position": "creation/entities/b/name",
+        "position": "creation/entities/c/name",
         "type": "ADD",
         "value": "Not Seeded",
         "seed": "No"
       },
       {
-        "position": "creation/entities/b/fields/a",
+        "position": "creation/entities/c/fields/a",
         "type": "ADD",
         "value": {
           "name": "id",
@@ -44,7 +44,7 @@
         }
       },
       {
-        "position": "creation/entities/b/fields/b",
+        "position": "creation/entities/c/fields/b",
         "type": "ADD",
         "value": {
           "name": "check",
@@ -52,7 +52,7 @@
         }
       },
       {
-        "position": "creation/entities/b/fields/c",
+        "position": "creation/entities/c/fields/c",
         "type": "ADD",
         "value": {
           "name": "count",
@@ -60,18 +60,6 @@
         }
       }
     ]
-  },
-  {
-    "name": "Move Field b",
-    "type": "MOVE",
-    "position": "creation/entities/a/fields/b",
-    "value": "a"
-  },
-  {
-    "name": "Move Field a",
-    "type": "MOVE",
-    "position": "creation/entities/a/fields/a",
-    "value": "c"
   },
   {
     "name": "Empty Application",
