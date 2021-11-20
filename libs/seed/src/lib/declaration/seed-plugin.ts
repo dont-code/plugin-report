@@ -19,7 +19,7 @@ export class SeedPlugin implements Plugin
         description: 'Add a new type of field to Dont-code: the SeedField',
         changes: [{
           location: {
-            parent: '#/definitions/field',
+            parent: '#/$defs/field',
             id: 'type'
           },
           update: {
@@ -34,7 +34,7 @@ export class SeedPlugin implements Plugin
         description: "Adds 'seed' attribute to any entity and display the entity if seed is Maybe or Yes",
         changes: [{
           location: {
-            parent: '#/definitions/entity',
+            parent: '#/$defs/entity',
             id: 'seed',
             after: 'name'
           },
@@ -47,7 +47,7 @@ export class SeedPlugin implements Plugin
           replace: true
         }, {
           location: {
-            parent: '/definitions/entity',
+            parent: '/$defs/entity',
             id: 'seed',
             after: 'name'
           },

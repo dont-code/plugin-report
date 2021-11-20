@@ -1,6 +1,6 @@
 export const getGreeting = () => cy.get('h1');
 export const getContentArea = () => cy.get('dontcode-sandbox-screen');
-export const getSubMenuWithText = (text:string) => cy.get("#mainMenu > .p-grid > .p-col > .ng-trigger > .p-menu-list").contains(text);
+export const getSubMenuWithText = (text:string) => cy.get("#mainMenu > .grid > .col > .ng-trigger > .p-menu-list").contains(text);
 export const clickAutoComplete = (name:string) => cy.get("#"+name+" > .p-autocomplete > .p-autocomplete-dropdown").click();
 export const selectPopupChoiceWithText = (text:string) => cy.get(".p-autocomplete-items").contains(text).click();
 export const getSendButton = () => cy.get("#sendButton");
