@@ -8,7 +8,7 @@
       "prefix": "dontcode",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "ngx-build-plus:browser",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/apps/plugin-tester",
@@ -33,7 +33,8 @@
               "./node_modules/primeflex/primeflex.min.css",
               "./node_modules/primeicons/primeicons.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "extraWebpackConfig": "apps/plugin-tester/webpack.config.js"
           },
           "configurations": {
             "production": {
@@ -69,21 +70,24 @@
           "defaultConfiguration": "production"
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+          "builder": "ngx-build-plus:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "plugin-tester:build:production"
+              "browserTarget": "plugin-tester:build:production",
+              "extraWebpackConfig": "apps/plugin-tester/webpack.prod.config.js"
             },
             "development": {
-              "browserTarget": "plugin-tester:build:development"
+              "browserTarget": "plugin-tester:build:development",
+              "extraWebpackConfig": "apps/plugin-tester/webpack.config.js"
             }
           },
           "defaultConfiguration": "development"
         },
         "extract-i18n": {
-          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "builder": "ngx-build-plus:extract-i18n",
           "options": {
-            "browserTarget": "plugin-tester:build"
+            "browserTarget": "plugin-tester:build",
+            "extraWebpackConfig": "apps/plugin-tester/webpack.config.js"
           }
         },
         "lint": {

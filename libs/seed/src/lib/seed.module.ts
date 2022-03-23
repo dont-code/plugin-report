@@ -31,3 +31,6 @@ export class SeedModule {
     ]);
   }
 }
+
+export * from './preview/seed-field/seed-field.component';
+export * from './preview/seeded-entity/seeded-entity.component';
