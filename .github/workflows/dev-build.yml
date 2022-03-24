@@ -5,9 +5,11 @@ name: Build Development
 
 on:
   push:
-    branches: [ Development ]
+    branches:
+    - Development
   pull_request:
-    branches: [ Development ]
+    branches:
+    - Development
 
 jobs:
   build:
