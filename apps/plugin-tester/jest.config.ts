@@ -1,6 +1,6 @@
 module.exports = {
   displayName: 'plugin-tester',
-  preset: '../../jest.preset.js',
+  preset: '../../jest.preset.ts',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {

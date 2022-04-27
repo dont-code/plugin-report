@@ -15,13 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@angular/*": ["node_modules/@angular/*"],
       "@dontcode/core": ["node_modules/@dontcode/core"],
       "@dontcode/plugin-common": ["node_modules/@dontcode/plugin-common"],
-      "@dontcode/sanbox": ["node_modules/@dontcode/sandbox"],
-      "@dontcode/seed": ["libs/seed/src/index.ts"],
-      "rxjs": ["node_modules/rxjs"],
-      "rxjs/*": ["node_modules/rxjs/*"]
+      "@dontcode/plugin-rest": ["libs/rest/src/index.ts"],
+      "@dontcode/sanbox": ["node_modules/@dontcode/sandbox"]
     }
   },
   "exclude": ["node_modules", "tmp"]
