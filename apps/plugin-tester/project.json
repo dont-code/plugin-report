@@ -33,8 +33,7 @@
         "scripts": [],
         "customWebpackConfig": {
           "path": "apps/plugin-tester/webpack.config.js"
-        },
-        "buildLibsFromSource": false
+        }
       },
       "configurations": {
         "production": {

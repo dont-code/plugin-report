@@ -80,7 +80,7 @@ jobs:
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
-          npm run build -- --prod --project=plugin-tester --base-href "https://dont-code.net/plugin-seed/"
+          nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
           touch dist/apps/plugin-tester/.nojekyll
       - name: Deploy PluginTester
         if: ${{ success() && ( matrix.browser == 'chromium' )}}

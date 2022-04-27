@@ -17,7 +17,7 @@
     "paths": {
       "@dontcode/core": ["node_modules/@dontcode/core"],
       "@dontcode/plugin-common": ["node_modules/@dontcode/plugin-common"],
-      "@dontcode/plugin-rest": ["libs/rest/src/index.ts"],
+      "@dontcode/plugin-seed": ["libs/seed/src/index.ts"],
       "@dontcode/sanbox": ["node_modules/@dontcode/sandbox"]
     }
   },
