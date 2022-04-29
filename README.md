@@ -34,6 +34,8 @@ This project is a standard Angular - npm project, so the usual commands apply:
 
 1. Installing
 
+`npm install nx -g` #Install nx.dev globally
+
 `npm install`
 
 3. Running the tester application
@@ -53,6 +55,22 @@ and point your browser to http://localhost:4200
 5. Build and deploy
 
   Just commit to Development or Release branch, the Github actions scripts will take care of it
+
+6. Debugging in Builder or Previewer application
+  We have setup some commands to enable debugging the plugin when run inside the Ide or Previewer.
+  Using npm link is difficult and doesn't work all the time, so we use [Yalc](https://github.com/wclr/yalc).
+
+  `npm install yalc -g` Installs the Yalc tool globally
+
+  `npm run publish-all` Publish the library in Yalc repository, after version increase (to bypass Angular caching)
+  
+  Then in the builder project (ide-ui) :
+  `yalc add @dontcode/plugin-seed` to install the plugin using Yalc
+
+  You can now set breakpoints in your plugin classes running in the builder, and if you modify your plugin code, just run
+  `npm run publish-all` again to rebuild it and reload in the builder application.
+
+
 ## Thank you
 
 This project was generated using [Nx](https://nx.dev), visit the [Nx Documentation](https://nx.dev/angular) to learn more.
