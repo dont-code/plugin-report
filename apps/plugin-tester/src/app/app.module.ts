@@ -13,6 +13,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {environment} from '../environments/environment';
 import {HttpClientModule} from '@angular/common/http';
 import {SeedModule} from '@dontcode/plugin-seed';
+import { PluginCommonModule } from '@dontcode/plugin-common';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import {SeedModule} from '@dontcode/plugin-seed';
       relativeLinkResolution: 'corrected',
       initialNavigation: 'enabledBlocking',
     }),
+    PluginCommonModule.forRoot (),
     SandboxModule.forRoot({
       webSocketUrl: environment.webSocketUrl,
       indexedDbName: 'Seed Plugin Tester',

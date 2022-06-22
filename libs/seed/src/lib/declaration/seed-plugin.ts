@@ -1,12 +1,11 @@
-import {Plugin, DontCodeModel, PluginConfig} from '@dontcode/core';
+import {Plugin, DontCodeModel, PluginConfig, Core} from '@dontcode/core';
 
 /**
  * This plugin demonstrate 2 things:
  * - how to declare a new field type that can be selected in the Builder and how to manage the display and edition of this new type in the Previewer.
  * - As well it adds a new attribute 'seed' to any Entity and provides a viewer for the Previewer when its value is Yes or Maybe.
  */
-export class SeedPlugin implements Plugin
-{
+export class SeedPlugin implements Plugin {
   getConfiguration(): PluginConfig {
     return {
       plugin: {
@@ -94,4 +93,7 @@ export class SeedPlugin implements Plugin
     }
   }
 
+  pluginInit(dontCode: Core): void {
+    // Nothing to do here
+  }
 }
