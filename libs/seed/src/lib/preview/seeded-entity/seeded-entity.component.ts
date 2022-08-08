@@ -1,5 +1,6 @@
-import {Component, Injector, OnInit} from '@angular/core';
+import {Component, Injector} from '@angular/core';
 import {ComponentLoaderService, PluginBaseComponent, PossibleTemplateList, TemplateList} from '@dontcode/plugin-common';
+import {Change} from "@dontcode/core";
 
 @Component({
   selector: 'dontcode-seeded-entity',
@@ -18,6 +19,9 @@ export class SeededEntityComponent extends PluginBaseComponent {
   }
   canProvide(key?: string): PossibleTemplateList {
     throw new Error('Method not implemented.');
+  }
+
+  handleChange(change: Change): void {
   }
 
 }
