@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SeededEntityComponent } from './seeded-entity.component';
+import {PluginCommonModule} from "@dontcode/plugin-common";
 
 describe('SeededEntityComponent', () => {
   let component: SeededEntityComponent;
@@ -8,7 +9,8 @@ describe('SeededEntityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeededEntityComponent ]
+      declarations: [ SeededEntityComponent ],
+      imports: [PluginCommonModule.forRoot()]
     })
     .compileComponents();
   });
