@@ -1,16 +1,15 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SeedFieldComponent } from './preview/seed-field/seed-field.component';
-import { SeededEntityComponent } from './preview/seeded-entity/seeded-entity.component';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {SeedFieldComponent} from './preview/seed-field/seed-field.component';
+import {SeededEntityComponent} from './preview/seeded-entity/seeded-entity.component';
 import {SeedPlugin} from "./declaration/seed-plugin";
-import { dtcde } from '@dontcode/core';
+import {dtcde} from '@dontcode/core';
 import {PluginCommonModule} from '@dontcode/plugin-common';
-import {InputTextModule} from "primeng/inputtext";
 import {ReactiveFormsModule} from "@angular/forms";
 import {DropdownModule} from "primeng/dropdown";
 
 @NgModule({
-    imports: [CommonModule, PluginCommonModule, ReactiveFormsModule, DropdownModule],
+    imports: [CommonModule, PluginCommonModule.forRoot(), ReactiveFormsModule, DropdownModule],
   declarations: [
     SeedFieldComponent,
     SeededEntityComponent

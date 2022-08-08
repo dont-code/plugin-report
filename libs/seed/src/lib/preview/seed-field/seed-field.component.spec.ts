@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SeedFieldComponent } from './seed-field.component';
+import {PluginCommonModule} from "@dontcode/plugin-common";
 
 describe('SeedFieldComponent', () => {
   let component: SeedFieldComponent;
@@ -8,7 +9,8 @@ describe('SeedFieldComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SeedFieldComponent ]
+      declarations: [ SeedFieldComponent ],
+      imports: [ PluginCommonModule.forRoot()]
     })
     .compileComponents();
   });
