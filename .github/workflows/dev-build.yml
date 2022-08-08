@@ -36,7 +36,7 @@ jobs:
           npm ci
       - name: Build
         run: |
-          nx run rest:build:production
+          nx run seed:build:production
       - name: Unit tests
         run: |
           nx run seed:test
