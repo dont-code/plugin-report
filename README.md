@@ -25,7 +25,7 @@ To develop your own plugins using this seed repository, simply:
 6. Ensure the plugin tester adds the updated module name of your plugin [AppModule](apps/plugin-tester/src/app/app.module.ts)
 7. Modify the templates loaded by the plugin tester to ease usage of your plugin [templates.json](apps/plugin-tester/src/assets/dev/templates.json)
 8. Run the plugin-tester application and debug your plugins there
-9. Modify and enhance the end 2 end tests of your plugins [seed.spec.ts](apps/plugin-tester-e2e/src/integration/seed.spec.ts)
+9. Modify and enhance the end 2 end tests of your plugins [seed.spec.ts](apps/plugin-tester-e2e/src/integration/report.spec.ts)
 10. Modify the Github Action scripts [to build](.github/workflows/dev-build.yml), [and deploy](./.github/workflows/release.yml) your plugins
 11. Test in the Dont-code Buidler and Previewer applications
 

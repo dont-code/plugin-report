@@ -73,7 +73,6 @@
               "with": "apps/plugin-tester/src/environments/environment.prod.ts"
             }
           ],
-          "outputHashing": "all",
           "customWebpackConfig": {
             "path": "apps/plugin-tester/webpack.prod.config.js"
           }

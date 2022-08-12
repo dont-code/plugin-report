@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'seed',
+  displayName: 'report',
   preset: '../../jest.preset.ts',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +8,7 @@ module.exports = {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/libs/seed',
+  coverageDirectory: '../../coverage/libs/report',
   transform: {
     '^.+.(ts|mjs|js|html)$': 'jest-preset-angular',
   },
@@ -17,5 +17,5 @@ module.exports = {
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
     'jest-preset-angular/build/serializers/html-comment',
-  ]
+  ],
 };

@@ -3,6 +3,6 @@
   "projects": {
     "plugin-tester": "apps/plugin-tester",
     "plugin-tester-e2e": "apps/plugin-tester-e2e",
-    "seed": "libs/seed"
+    "report": "libs/report"
   }
 }

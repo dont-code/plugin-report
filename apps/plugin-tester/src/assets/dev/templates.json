@@ -1,39 +1,43 @@
-[{
-  "name": "Test Seed Field",
-  "sequence": [
-    {
-      "position": "creation/entities/a",
-      "type": "ADD",
-      "value": {
-        "name": "Seed Field"
-      }
-    },{
-      "position": "creation/entities/a/fields",
-      "type": "ADD",
-      "value": {
-        "aa": {
-          "name": "Test",
-          "type": "Seed Field"
+[
+  {
+    "name": "Test Report Field",
+    "sequence": [
+      {
+        "position": "creation/entities/a",
+        "type": "ADD",
+        "value": {
+          "name": "Report Field"
+        }
+      },
+      {
+        "position": "creation/entities/a/fields",
+        "type": "ADD",
+        "value": {
+          "aa": {
+            "name": "Test",
+            "type": "Report Field"
+          }
         }
       }
-    }]
-},{
-  "name": "Test Seeded Entity",
-  "type": "ADD",
-  "position": "creation/entities/b",
-  "value": {
-    "name": "Seeded",
-    "seed": "Maybe"
-  }
-
-},{
+    ]
+  },
+  {
+    "name": "Test Reported Entity",
+    "type": "ADD",
+    "position": "creation/entities/b",
+    "value": {
+      "name": "Reported",
+      "report": "Maybe"
+    }
+  },
+  {
     "name": "Test Other Entity",
     "sequence": [
       {
         "position": "creation/entities/c/name",
         "type": "ADD",
-        "value": "Not Seeded",
-        "seed": "No"
+        "value": "Not Reported",
+        "report": "No"
       },
       {
         "position": "creation/entities/c/fields/a",
