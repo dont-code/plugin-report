@@ -11,82 +11,27 @@ export class ReportPlugin implements Plugin {
       plugin: {
         id: 'ReportPlugin',
         'display-name':
-          'An starter project for development of Dont-code plugins.',
+          'Implements the Dont-code standard report model.',
         version: '1.0.0',
       },
-      'schema-updates': [
-        {
-          id: 'report-field',
-          description: 'Add a new type of field to Dont-code: the ReportField',
-          changes: [
-            {
-              location: {
-                parent: '#/$defs/field',
-                id: 'type',
-              },
-              update: {
-                enum: ['Report Field'],
-              },
-              replace: false,
-            },
-          ],
-        },
-        {
-          id: 'report-entity',
-          description:
-            "Adds 'report' attribute to any entity and display the entity if seed is Maybe or Yes",
-          changes: [
-            {
-              location: {
-                parent: '#/$defs/entity',
-                id: 'report',
-                after: 'name',
-              },
-              update: {
-                enum: ['Yes', 'Maybe'],
-              },
-              replace: true,
-            },
-            {
-              location: {
-                parent: '/$defs/entity',
-                id: 'report',
-                after: 'name',
-              },
-              update: {
-                enum: ['No'],
-              },
-              replace: false,
-            },
-          ],
-        },
-      ],
       'preview-handlers': [
         {
           location: {
-            parent: DontCodeModel.APP_FIELDS,
-            id: 'type',
-            values: [
-              {
-                Report: {
-                  enum: ['Report Field'],
-                },
-              },
-            ],
+            parent: DontCodeModel.APP_REPORTS,
+            id: ''
           },
           class: {
-            name: 'ReportFieldComponent',
+            name: 'ReportEntityComponent',
             source: 'report',
           },
         },
         {
           location: {
-            parent: DontCodeModel.APP_ENTITIES,
-            id: 'report',
-            values: ['Yes', 'Maybe'],
+            parent: DontCodeModel.APP_REPORTS_DISPLAY,
+            id: ''
           },
           class: {
-            name: 'ReportEntityComponent',
+            name: 'ReportDisplayComponent',
             source: 'report',
           },
         },

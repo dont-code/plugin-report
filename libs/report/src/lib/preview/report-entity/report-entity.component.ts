@@ -24,5 +24,7 @@ export class ReportEntityComponent extends PluginBaseComponent {
     throw new Error('Method not implemented.');
   }
 
-  handleChange(change: Change): void {}
+  handleChange(change: Change): void {
+    // Do nothing for now
+  }
 }

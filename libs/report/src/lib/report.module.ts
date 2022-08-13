@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReportFieldComponent } from './preview/report-field/report-field.component';
+import { ReportDisplayComponent } from './preview/report-display/report-display.component';
 import { ReportEntityComponent } from './preview/report-entity/report-entity.component';
 import { ReportPlugin } from './declaration/report-plugin';
 import { dtcde } from '@dontcode/core';
@@ -15,7 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
     ReactiveFormsModule,
     DropdownModule,
   ],
-  declarations: [ReportFieldComponent, ReportEntityComponent],
+  declarations: [ReportDisplayComponent, ReportEntityComponent],
   id: 'dontcode-plugin/report', // A module containing previewer components must have an id to be found by the dont-code platform.
 })
 export class ReportModule {
@@ -27,11 +27,11 @@ export class ReportModule {
   // We declare the components referenced by the ReportPlugin configuration
   exposedPreviewHandlers(): Map<string, any> {
     return new Map<string, any>([
-      ['ReportFieldComponent', ReportFieldComponent],
-      ['ReportedEntityComponent', ReportEntityComponent],
+      ['ReportEntityComponent', ReportEntityComponent],
+      ['ReportDisplayComponent', ReportDisplayComponent]
     ]);
   }
 }
 
-export * from './preview/report-field/report-field.component';
+export * from './preview/report-display/report-display.component';
 export * from './preview/report-entity/report-entity.component';

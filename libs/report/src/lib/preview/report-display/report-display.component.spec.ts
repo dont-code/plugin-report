@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ReportFieldComponent } from './report-field.component';
+import { ReportDisplayComponent } from './report-display.component';
 import { PluginCommonModule } from '@dontcode/plugin-common';
 
 describe('ReportFieldComponent', () => {
-  let component: ReportFieldComponent;
-  let fixture: ComponentFixture<ReportFieldComponent>;
+  let component: ReportDisplayComponent;
+  let fixture: ComponentFixture<ReportDisplayComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReportFieldComponent],
+      declarations: [ReportDisplayComponent],
       imports: [PluginCommonModule.forRoot()],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ReportFieldComponent);
+    fixture = TestBed.createComponent(ReportDisplayComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

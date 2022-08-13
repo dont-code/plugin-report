@@ -1,12 +1,12 @@
 [
   {
-    "name": "Test Report Field",
+    "name": "Test Basic Report",
     "sequence": [
       {
         "position": "creation/entities/a",
         "type": "ADD",
         "value": {
-          "name": "Report Field"
+          "name": "Basic Entity"
         }
       },
       {
@@ -14,53 +14,46 @@
         "type": "ADD",
         "value": {
           "aa": {
-            "name": "Test",
-            "type": "Report Field"
+            "name": "Name",
+            "type": "Text"
+          },
+          "ab": {
+            "name": "Type",
+            "type": "Text"
+          },
+          "ac": {
+            "name": "Value",
+            "type": "Text"
+          },
+          "ad": {
+            "name": "from",
+            "type": "Date"
+          },
+          "aa": {
+            "name": "Amount",
+            "type": "Euro"
           }
         }
-      }
-    ]
-  },
-  {
-    "name": "Test Reported Entity",
-    "type": "ADD",
-    "position": "creation/entities/b",
-    "value": {
-      "name": "Reported",
-      "report": "Maybe"
-    }
-  },
-  {
-    "name": "Test Other Entity",
-    "sequence": [
-      {
-        "position": "creation/entities/c/name",
-        "type": "ADD",
-        "value": "Not Reported",
-        "report": "No"
       },
       {
-        "position": "creation/entities/c/fields/a",
+        "position": "creation/reports/e",
         "type": "ADD",
         "value": {
-          "name": "id",
-          "type": "Text"
-        }
-      },
-      {
-        "position": "creation/entities/c/fields/b",
-        "type": "ADD",
-        "value": {
-          "name": "check",
-          "type": "Boolean"
-        }
-      },
-      {
-        "position": "creation/entities/c/fields/c",
-        "type": "ADD",
-        "value": {
-          "name": "count",
-          "type": "Number"
+          "title": "Basic Report",
+          "for": "Basic Entity",
+          "as": {
+            "ee": {
+              "type": "Bar",
+              "of": "Value"
+            },
+            "ef": {
+              "type": "Pie",
+              "of": "Amount"
+            },
+            "eg": {
+              "type": "Table"
+            }
+          }
         }
       }
     ]
