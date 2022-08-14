@@ -1,7 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ReportEntityComponent } from './report-entity.component';
-import { PluginCommonModule } from '@dontcode/plugin-common';
+import {ReportEntityComponent} from './report-entity.component';
+import {PluginCommonModule} from '@dontcode/plugin-common';
 import {
   Change,
   CommandProviderInterface,
@@ -10,8 +10,8 @@ import {
   DontCodeTestManager,
   dtcde
 } from "@dontcode/core";
-import {Observable} from "rxjs";
-import * as Assert from "assert";
+import {delay, from, map, Observable, of, Subject, take, takeUntil, timer} from "rxjs";
+import {compileClassMetadata} from "@angular/compiler";
 
 describe('ReportEntityComponent', () => {
   let component: ReportEntityComponent;
@@ -29,25 +29,26 @@ describe('ReportEntityComponent', () => {
     component = fixture.componentInstance;
   });
 
-  it ('should handle subfields', () => {
+  it ('should handle subfields', (done) => {
+
     dtcde.getModelManager().resetContent({
       creation: {
         entities: {
           'aa': {
-            name:'Entity1',
+            name: 'Entity1',
             fields: {
               'aaa': {
                 name: 'name',
-                type:'string'
+                type: 'string'
               },
               'aab': {
                 name: 'value',
-                type:'number'
+                type: 'number'
               }
             }
           }
         },
-        reports:{
+        reports: {
           'ba': {
             title: 'Test',
             for: 'Entity1',
@@ -63,11 +64,23 @@ describe('ReportEntityComponent', () => {
       }
     });
 
+    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+      name: 'Test1',
+      value: 123
+    }, {
+      name: 'Test2',
+      value: 456
+    }]);
+
     const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
     const entityPointer = provider.calculatePointerFor('creation/reports/ba');
     component.initCommandFlow(provider, entityPointer);
 
-    expect(component.fields).toHaveLength(1);
+    fixture.detectChanges();
+
+    DontCodeTestManager.waitUntilTrue(() => {
+      return (component.fields.length == 1) && (component.title=='Test');
+    }, done);
   });
 });
 
