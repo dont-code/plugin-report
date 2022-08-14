@@ -1,1 +1,16 @@
-<h1>Hello from ReportEntityComponent !</h1>
+<dtcde-dynamic></dtcde-dynamic>
+Report {{title}}
+<div class="p-fluid">
+  <div class="field grid" *ngFor="let field of fields">
+    <label [for]="field.name" class="col-12 mb:col-2 md:col-2 md:mb-0">{{field.name}}</label>
+    <div class="col-12 md:col-10">
+      <ng-container *ngTemplateOutlet="templateOf(field); context:{ fieldType:field.type}"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #defaultdisplay let-type="fieldType">
+  <div class="col-12 md:col-10">
+    No components for {{type}}
+  </div>
+</ng-template>
