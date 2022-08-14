@@ -42,9 +42,6 @@
           "title": "Basic Report",
           "for": "Basic Entity",
           "as": {
-            "eg": {
-              "type": "Table"
-            },
             "ee": {
               "type": "Bar",
               "of": "Value"
@@ -52,6 +49,9 @@
             "ef": {
               "type": "Pie",
               "of": "Amount"
+            },
+            "eg": {
+              "type": "Table"
             }
           }
         }

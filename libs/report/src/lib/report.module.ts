@@ -7,14 +7,16 @@ import { dtcde } from '@dontcode/core';
 import { PluginCommonModule } from '@dontcode/plugin-common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import {ChartModule} from "primeng/chart";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    PluginCommonModule.forRoot(),
-    ReactiveFormsModule,
-    DropdownModule,
-  ],
+    imports: [
+        CommonModule,
+        PluginCommonModule.forRoot(),
+        ReactiveFormsModule,
+        DropdownModule,
+        ChartModule,
+    ],
   declarations: [ReportDisplayComponent, ReportEntityComponent],
   id: 'dontcode-plugin/report', // A module containing previewer components must have an id to be found by the dont-code platform.
 })

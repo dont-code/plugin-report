@@ -2,8 +2,10 @@
 Report {{title}}
 <div class="p-fluid">
   <div class="field grid" *ngFor="let field of fields">
-    <label [for]="field.name" class="col-12 mb:col-2 md:col-2 md:mb-0">{{field.name}}</label>
-    <div class="col-12 md:col-10">
+    <div *ngIf="field.type==='Table'" class="col-12">
+      <ng-container *ngTemplateOutlet="templateOf(field); context:{ fieldType:field.type}"></ng-container>
+    </div>
+    <div *ngIf="field.type!=='Table'" class="col-12 md:col-6">
       <ng-container *ngTemplateOutlet="templateOf(field); context:{ fieldType:field.type}"></ng-container>
     </div>
   </div>
