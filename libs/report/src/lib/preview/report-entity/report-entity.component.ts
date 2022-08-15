@@ -6,7 +6,7 @@ import {
   TemplateList,
 } from '@dontcode/plugin-common';
 import {Change, ChangeType, CommandProviderInterface, DontCodeModel, DontCodeModelPointer} from '@dontcode/core';
-import {ValueService} from "@dontcode/sandbox";
+import {ValueService} from "@dontcode/plugin-common";
 
 @Component({
   selector: 'dontcode-report-entity',
