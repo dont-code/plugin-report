@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Test Basic Report",
+    "sequence": [
+      {
+        "position": "creation/entities/a",
+        "type": "ADD",
+        "value": {
+          "name": "Basic Entity"
+        }
+      },
+      {
+        "position": "creation/entities/a/fields",
+        "type": "ADD",
+        "value": {
+          "aa": {
+            "name": "Name",
+            "type": "Text"
+          },
+          "ab": {
+            "name": "Type",
+            "type": "Text"
+          },
+          "ac": {
+            "name": "Value",
+            "type": "Text"
+          },
+          "ad": {
+            "name": "from",
+            "type": "Date"
+          },
+          "aa": {
+            "name": "Amount",
+            "type": "Euro"
+          }
+        }
+      },
+      {
+        "position": "creation/reports/e",
+        "type": "ADD",
+        "value": {
+          "title": "Basic Report",
+          "for": "Basic Entity",
+          "as": {
+            "ee": {
+              "type": "Bar",
+              "of": "Value"
+            },
+            "ef": {
+              "type": "Pie",
+              "of": "Amount"
+            },
+            "eg": {
+              "type": "Table"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Empty Application",
+    "type": "RESET",
+    "position": "creation",
+    "value": null
+  }
+]

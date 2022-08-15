@@ -1,0 +1,92 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        browser: [chromium, chrome]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: main
+      - name: Use Node.js 16
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install
+        run: |
+          npm install -g nx
+          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
+          npm ci
+      - name: Version the plugin library
+        if: ${{ matrix.browser == 'chromium' }}
+        run: npm version patch
+        working-directory: libs/seed
+      - name: Build
+        run: |
+          nx run seed:build:production
+      - name: Unit tests
+        run: |
+          nx run seed:test
+          nx run plugin-tester:test
+      - name: E2E Tests on ${{matrix.browser}}
+        run: |
+          nx run plugin-tester-e2e:e2e --browser ${{matrix.browser}}
+      - uses: actions/upload-artifact@v2
+        # Test run screenshots only on failure
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: dist/cypress/apps/plugin-tester-e2e/screenshots
+        # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: cypress-videos
+          path: dist/cypress/apps/plugin-tester-e2e/videos
+      - name: Get the plugin version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@master
+        with:
+          path: libs/seed
+      - name: Push the plugin version in Github
+        if: ${{ success() && ( matrix.browser == 'chromium' )}}
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+          git commit -a -m "New release ${{steps.package-version.outputs.current-version}}" --allow-empty
+          git push
+      - name: Publish the Plugin to npm repository
+        if: ${{ success() && ( matrix.browser == 'chromium' )}}
+        run: |
+          npm publish dist/libs/seed --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Deploy the tester application in github pages
+        if: ${{ success() && matrix.browser == 'chromium'}}
+        run: |
+          nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+          touch dist/apps/plugin-tester/.nojekyll
+      - name: Deploy PluginTester
+        if: ${{ success() && ( matrix.browser == 'chromium' )}}
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: dist/apps/plugin-tester
+
