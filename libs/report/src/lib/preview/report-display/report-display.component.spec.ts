@@ -10,7 +10,7 @@ import {
   DontCodeTestManager,
   dtcde
 } from "@dontcode/core";
-import {Observable} from "rxjs";
+import {firstValueFrom, map, Observable} from "rxjs";
 
 describe('ReportFieldComponent', () => {
   let component: ReportDisplayComponent;
@@ -32,7 +32,7 @@ describe('ReportFieldComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should generate a pie chart', (done) => {
+  it('should generate a pie chart', () => {
     dtcde.getModelManager().resetContent({
       creation: {
         entities: {
@@ -91,9 +91,11 @@ describe('ReportFieldComponent', () => {
       fixture.detectChanges();
     });
 
-    DontCodeTestManager.waitUntilTrue(() => {
-      return (component.data.labels !=null);
-    }, done);
+    return firstValueFrom(component.data$.pipe(map(data => {
+      expect (data.labels).not.toBeNull();
+      expect (component.entityNamePropertyName).toEqual ("name");
+      return data;
+    })));
 
 
   });

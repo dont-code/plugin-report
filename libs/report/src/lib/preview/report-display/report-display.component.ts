@@ -1,11 +1,15 @@
 import {Component, TemplateRef, ViewChild,} from '@angular/core';
+import {AbstractDynamicComponent, PossibleTemplateList, TemplateList,} from '@dontcode/plugin-common';
 import {
-  AbstractDynamicComponent,
-  EntityListManager,
-  PossibleTemplateList,
-  TemplateList,
-} from '@dontcode/plugin-common';
-import {Change, CommandProviderInterface, DontCodeModelPointer, PreviewHandler} from "@dontcode/core";
+  Change,
+  ChangeType,
+  CommandProviderInterface, DontCodeModel, DontCodeModelManager,
+  DontCodeModelPointer,
+  DontCodeReportDisplayType,
+  PreviewHandler
+} from "@dontcode/core";
+import {GraphDataTransformer} from "../graph-data-transformer";
+import {Observable} from "rxjs";
 
 @Component({
   selector: 'dontcode-report-field',
@@ -16,14 +20,19 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
   @ViewChild('fullView', {static: true})
   private fullView!: TemplateRef<any>;
 
-  data: any = null;
   type?: string;
 
   provider: CommandProviderInterface | null = null;
   graphModelPointer: DontCodeModelPointer | null = null;
+  protected dataTransformer:GraphDataTransformer;
+  data$: Observable<any>;
 
-  constructor() {
+  entityNamePropertyName?:string|null;
+
+  constructor(protected modelMgr:DontCodeModelManager) {
     super();
+    this.dataTransformer = new GraphDataTransformer(modelMgr);
+    this.data$ = this.dataTransformer.dataObservable();
   }
 
   providesTemplates(): TemplateList {
@@ -36,15 +45,11 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
 
   setValue(val: any) {
     super.setValue(val);
-    this.data = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'First Dataset',
-          data: [65, 59, 80, 81, 56, 55, 40]
-        }
-        ]
+    // The store can be sent
+    if( (val!=null) && (val.entities!=null)) {
+      val = val.entities;
     }
+    this.dataTransformer.updateSourceData(val);
     //this.data = (val as EntityListManager).entities;
   }
 
@@ -52,20 +57,44 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
     this.provider=provider;
     this.graphModelPointer=pointer;
 
-    const json = this.provider.getJsonAt(pointer.position);
-    this.type = this.translateType (json?.type);
+    const json = this.provider.getJsonAt(pointer.position) as DontCodeReportDisplayType;
+    this.dataTransformer.setConfig(json);
+    this.type = this.dataTransformer.translatedType ();
 
-  }
-
-  protected translateType (dontCodeType?:string): string|undefined {
-    if( dontCodeType!=null) {
-      return dontCodeType.toLowerCase();
+      // Try to guess the field of the target entity of the report that represents the name of the entity
+    const reportPosition = DontCodeModelPointer.parentPosition(this.graphModelPointer.containerPosition);
+    if (reportPosition  != null) {
+      const entity = this.modelMgr.findTargetOfProperty(DontCodeModel.APP_REPORTS_FOR_NODE, reportPosition);
+      if( (entity!=null) && (entity.value!=null)) {
+        this.entityNamePropertyName = this.modelMgr.guessPropertyRepresentingName(null, entity.value.fields);
+      }
+      else {
+        this.entityNamePropertyName = null;
+      }
     }
-    return;
+    if( this.entityNamePropertyName!=null)
+      this.dataTransformer.setLabelFieldName (this.entityNamePropertyName);
   }
 
   handleChange(change: Change): void {
-    // Nothing for now
+      // We are changing the config
+    if (change.position==this.graphModelPointer?.position) {
+      if (change.type===ChangeType.DELETE) {
+        this.dataTransformer.setConfig();
+        this.type=undefined;
+      }else {
+        this.dataTransformer.setConfig(change.value as DontCodeReportDisplayType);
+        this.type = this.dataTransformer.translatedType();
+      }
+    } else if (change.position==this.graphModelPointer?.position+'/'+DontCodeModel.APP_REPORTS_DISPLAY_TYPE_NODE) {
+      if (change.type===ChangeType.DELETE) {
+        this.dataTransformer.setConfig();
+        this.type=undefined;
+      }else {
+        this.dataTransformer.changeType(change.value as string);
+        this.type = this.dataTransformer.translatedType();
+      }
+    }
   }
 
 }
