@@ -14,6 +14,7 @@ import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { ReportModule } from '@dontcode/report';
 import { PluginCommonModule } from '@dontcode/plugin-common';
+import {BasicModule} from "@dontcode/plugin-basic";
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +29,7 @@ import { PluginCommonModule } from '@dontcode/plugin-common';
       initialNavigation: 'enabledBlocking',
     }),
     PluginCommonModule.forRoot(),
+    BasicModule,
     SandboxModule.forRoot({
       webSocketUrl: environment.webSocketUrl,
       indexedDbName: 'Report Plugin Tester',

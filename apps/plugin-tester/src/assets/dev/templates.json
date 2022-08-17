@@ -26,10 +26,10 @@
             "type": "Text"
           },
           "ad": {
-            "name": "from",
+            "name": "From",
             "type": "Date"
           },
-          "aa": {
+          "ae": {
             "name": "Amount",
             "type": "Euro"
           }
@@ -55,6 +55,16 @@
             }
           }
         }
+      }
+    ]
+  },
+  {
+    "name": "Switch graphs position",
+    "sequence": [
+      {
+        "position": "creation/reports/e/as/eg",
+        "type": "MOVE",
+        "value": "ef"
       }
     ]
   },
