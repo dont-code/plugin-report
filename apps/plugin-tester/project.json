@@ -1,6 +1,5 @@
 {
   "projectType": "application",
-  "root": "apps/plugin-tester",
   "sourceRoot": "apps/plugin-tester/src",
   "prefix": "dontcode",
   "targets": {
@@ -78,8 +77,7 @@
             "path": "apps/plugin-tester/webpack.prod.config.js"
           }
         },
-        "development": {
-        }
+        "development": {}
       },
       "defaultConfiguration": "production"
     },

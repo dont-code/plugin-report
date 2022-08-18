@@ -6,7 +6,6 @@
     "@angular/core": "^13.3.2",
     "@dontcode/core": "^0.5.16",
     "@dontcode/plugin-common": "^0.5.16",
-    "@dontcode/sandbox": "^0.5.16",
     "rxjs": "^7.5.5"
   },
   "dependencies": {

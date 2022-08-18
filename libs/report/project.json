@@ -1,6 +1,5 @@
 {
   "projectType": "library",
-  "root": "libs/report",
   "sourceRoot": "libs/report/src",
   "prefix": "dontcode",
   "targets": {
