@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
+          token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
       - name: Use Node.js 16
         uses: actions/setup-node@v2
         with:
