@@ -33,13 +33,13 @@ jobs:
         run: |
           npm install -g nx
           npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
-          npm ci
+          npm install
       - name: Build
         run: |
-          nx run seed:build:production
+          nx run report:build:production
       - name: Unit tests
         run: |
-          nx run seed:test
+          nx run report:test
           nx run plugin-tester:test
       - name: E2E Tests on ${{matrix.browser}}
         run: |

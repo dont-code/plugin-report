@@ -22,6 +22,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+        token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
       - name: Use Node.js 16
         uses: actions/setup-node@v2
         with:
@@ -32,17 +33,17 @@ jobs:
         run: |
           npm install -g nx
           npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
-          npm ci
+          npm install
       - name: Version the plugin library
         if: ${{ matrix.browser == 'chromium' }}
         run: npm version patch
-        working-directory: libs/seed
+        working-directory: libs/report
       - name: Build
         run: |
-          nx run seed:build:production
+          nx run report:build:production
       - name: Unit tests
         run: |
-          nx run seed:test
+          nx run report:test
           nx run plugin-tester:test
       - name: E2E Tests on ${{matrix.browser}}
         run: |
@@ -59,34 +60,18 @@ jobs:
         with:
           name: cypress-videos
           path: dist/cypress/apps/plugin-tester-e2e/videos
-      - name: Get the plugin version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@master
-        with:
-          path: libs/seed
-      - name: Push the plugin version in Github
-        if: ${{ success() && ( matrix.browser == 'chromium' )}}
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
-          git commit -a -m "New release ${{steps.package-version.outputs.current-version}}" --allow-empty
-          git push
-      - name: Publish the Plugin to npm repository
-        if: ${{ success() && ( matrix.browser == 'chromium' )}}
-        run: |
-          npm publish dist/libs/seed --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
-          nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-seed/"
+          nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-report/"
           touch dist/apps/plugin-tester/.nojekyll
-      - name: Deploy PluginTester
-        if: ${{ success() && ( matrix.browser == 'chromium' )}}
-        uses: JamesIves/github-pages-deploy-action@releases/v3
+      - if: ${{ success() && inputs.branch == 'main'}}
+        uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: dist/apps/plugin-tester
+          repo: dont-code/plugin-report
+          target_branch: gh-pages # The branch the action should deploy to.
+          build_dir: plugin-report/dist/apps/plugin-tester
+          jekyll: false
+        env:
+          GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
 
