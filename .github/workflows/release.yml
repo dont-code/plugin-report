@@ -30,7 +30,7 @@ jobs:
       - name: Install
         run: |
           npm install -g nx
-          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
+          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest --no-optional
           npm install
       - name: Version the plugin library
         if: ${{ matrix.browser == 'chromium' }}
