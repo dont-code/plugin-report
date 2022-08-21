@@ -42,33 +42,32 @@ jobs:
       - name: Unit tests
         run: |
           nx run report:test
-          nx run plugin-tester:test
+          nx run report-tester:test
       - name: E2E Tests on ${{matrix.browser}}
         run: |
-          nx run plugin-tester-e2e:e2e --browser ${{matrix.browser}}
-      - uses: actions/upload-artifact@v2
+          nx run report-tester-e2e:e2e --browser ${{matrix.browser}}
+      - uses: actions/upload-artifact@v3
         # Test run screenshots only on failure
         if: failure()
         with:
           name: cypress-screenshots
-          path: dist/cypress/apps/plugin-tester-e2e/screenshots
+          path: dist/cypress/apps/report-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
-          path: dist/cypress/apps/plugin-tester-e2e/videos
+          path: dist/cypress/apps/report-tester-e2e/videos
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
-          nx run plugin-tester:build:production --base-href "https://dont-code.net/plugin-report/"
-          touch dist/apps/plugin-tester/.nojekyll
-      - if: ${{ success() && inputs.branch == 'main'}}
+          nx run report-tester:build:production --base-href "https://dont-code.net/plugin-report/"
+      - if: ${{ success() && matrix.browser == 'chromium'}}
         uses: crazy-max/ghaction-github-pages@v3.0.0
         with:
           repo: dont-code/plugin-report
           target_branch: gh-pages # The branch the action should deploy to.
-          build_dir: plugin-report/dist/apps/plugin-tester
+          build_dir: dist/apps/report-tester
           jekyll: false
         env:
           GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}
