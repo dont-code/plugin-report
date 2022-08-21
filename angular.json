@@ -1,8 +1,8 @@
 {
   "version": 2,
   "projects": {
-    "plugin-tester": "apps/plugin-tester",
-    "plugin-tester-e2e": "apps/plugin-tester-e2e",
-    "report": "libs/report"
+    "report": "libs/report",
+    "report-tester": "apps/report-tester",
+    "report-tester-e2e": "apps/report-tester-e2e"
   }
 }

@@ -14,7 +14,7 @@ import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { ReportModule } from '@dontcode/report';
 import { PluginCommonModule } from '@dontcode/plugin-common';
-import {BasicModule} from "@dontcode/plugin-basic";
+import { BasicModule } from '@dontcode/plugin-basic';
 
 @NgModule({
   declarations: [AppComponent],
