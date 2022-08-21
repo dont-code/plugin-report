@@ -1,5 +1,5 @@
 module.exports = {
-  name: 'plugin-tester',
+  name: 'report-tester',
   exposes: {
     './Report': './libs/report/src/lib/report.module.ts',
   },

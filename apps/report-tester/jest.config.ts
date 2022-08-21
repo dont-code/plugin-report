@@ -1,5 +1,5 @@
 export default {
-  displayName: 'plugin-tester',
+  displayName: 'report-tester',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
@@ -8,7 +8,7 @@ export default {
       stringifyContentPathRegex: '\\.(html|svg)$',
     },
   },
-  coverageDirectory: '../../coverage/apps/plugin-tester',
+  coverageDirectory: '../../coverage/apps/report-tester',
   transform: {
     '^.+.(ts|mjs|js|html)$': 'jest-preset-angular',
   },

@@ -24,5 +24,4 @@ describe('plugin-tester', () => {
 
     getContentArea().contains('Basic Report');
   });
-
 });

@@ -21,18 +21,20 @@ jobs:
         browser: [chromium, chrome]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           ref: Development
+          token: ${{secrets.DONTCODE_ACTIONS_TOKEN}}
       - name: Use Node.js version 16
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
           cache: 'npm'
       - name: Install
         run: |
           npm install -g nx
-          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest --no-optional
+          npm install @dontcode/core@latest @dontcode/plugin-common@latest @dontcode/sandbox@latest @dontcode/plugin-basic@latest --no-optional
           npm install
       - name: Build
         run: |
@@ -40,19 +42,19 @@ jobs:
       - name: Unit tests
         run: |
           nx run report:test
-          nx run plugin-tester:test
+          nx run report-tester:test
       - name: E2E Tests on ${{matrix.browser}}
         run: |
-          nx run plugin-tester-e2e:e2e --browser ${{matrix.browser}}
-      - uses: actions/upload-artifact@v2
+          nx run report-tester-e2e:e2e --browser ${{matrix.browser}}
+      - uses: actions/upload-artifact@v3
         # Test run screenshots only on failure
         if: failure()
         with:
           name: cypress-screenshots
-          path: dist/cypress/apps/plugin-tester-e2e/screenshots
+          path: dist/cypress/apps/report-tester-e2e/screenshots
         # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         if: always()
         with:
           name: cypress-videos
-          path: dist/cypress/apps/plugin-tester-e2e/videos
+          path: dist/cypress/apps/report-tester-e2e/videos
