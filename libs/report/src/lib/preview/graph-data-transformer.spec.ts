@@ -26,17 +26,111 @@ describe('GraphDataTransformer', () => {
     });
 
     toTest.updateSourceData ([{
-      name: 'Test1',
+      whatever: 'Test1',
       value: 123
     }, {
-      name: 'Test2',
+      whatever: 'Test2',
       value: 456
     }]);
 
     return firstValueFrom(toTest.dataObservable().pipe(map (result => {
       expect(result.labels).not.toBeNull();
+      expect(result.labels).toEqual([1, 2]);
       expect(result.datasets).toHaveLength(1);
-      expect(result.datasets.data).not.toBeNull();
+      expect(result.datasets[0].data).not.toBeNull();
+      expect(result.datasets[0].data).toEqual([123,456]);
     })))
   });
+
+  it('should translate object data', () => {
+    const toTest = new GraphDataTransformer( dtcde.getModelManager(), {
+      type: 'Pie',
+      of: 'object',
+      title: 'Pie Chart'
+    });
+
+    toTest.setLabelFieldName('name');
+
+    toTest.updateSourceData ([{
+      name: 'Test1',
+      object: {
+        amount: 343,
+        currency: 'EUR'
+      }
+    }, {
+      name: 'Test2',
+      object: {
+        amount: 436,
+        currency: 'USD'
+
+      }
+    }]);
+
+    return firstValueFrom(toTest.dataObservable().pipe(map (result => {
+      expect(result.labels).not.toBeNull();
+      expect(result.labels).toEqual(['Test1', 'Test2']);
+      expect(result.datasets).toHaveLength(1);
+      expect(result.datasets[0].data).not.toBeNull();
+      expect(result.datasets[0].data).toEqual([343,436]);
+    })))
+  });
+
+  it('should manage date values', () => {
+    const toTest = new GraphDataTransformer( dtcde.getModelManager(), {
+      type: 'Pie',
+      of: 'object',
+      title: 'Pie Chart'
+    });
+
+    toTest.setLabelFieldName('name');
+
+    toTest.updateSourceData ([{
+      name: 'Test1',
+      object: new Date()
+    }, {
+      name: 'Test2',
+      object: new Date()
+    }]);
+
+    return firstValueFrom(toTest.dataObservable().pipe(map (result => {
+      expect(result.labels).not.toBeNull();
+      expect(result.labels).toEqual(['Test1', 'Test2']);
+      expect(result.datasets).toHaveLength(1);
+      expect(result.datasets[0].data).toHaveLength(2);
+      expect(result.datasets[0].data[0]).toBeInstanceOf(Date);
+    })))
+  });
+
+  it('should support null values', () => {
+    const toTest = new GraphDataTransformer( dtcde.getModelManager(), {
+      type: 'Pie',
+      of: 'object',
+      title: 'Pie Chart'
+    });
+
+    toTest.setLabelFieldName('name');
+
+    toTest.updateSourceData ([{
+      name: 'Test1',
+      object: {
+        value: null,
+        label: 'Label'
+      }
+    }, {
+      name:'Test2',
+      object: {
+        value: 343,
+        label: 'label2'
+        }
+    }]);
+
+    return firstValueFrom(toTest.dataObservable().pipe(map (result => {
+      expect(result.labels).not.toBeNull();
+      expect(result.labels).toEqual(['Test1', 'Test2']);
+      expect(result.datasets).toHaveLength(1);
+      expect(result.datasets[0].data).toHaveLength(2);
+      expect(result.datasets[0].data).toEqual([null, 343]);
+    })))
+  });
+
 });

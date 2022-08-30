@@ -3,9 +3,12 @@ import {AbstractDynamicComponent, PossibleTemplateList, TemplateList,} from '@do
 import {
   Change,
   ChangeType,
-  CommandProviderInterface, DontCodeModel, DontCodeModelManager,
+  CommandProviderInterface,
+  DontCodeModel,
+  DontCodeModelManager,
   DontCodeModelPointer,
   DontCodeReportDisplayType,
+  DontCodeSchemaManager,
   PreviewHandler
 } from "@dontcode/core";
 import {GraphDataTransformer} from "../graph-data-transformer";
@@ -26,13 +29,15 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
   graphModelPointer: DontCodeModelPointer | null = null;
   protected dataTransformer:GraphDataTransformer;
   data$: Observable<any>;
+  option$: Observable<any>;
 
   entityNamePropertyName?:string|null;
 
-  constructor(protected modelMgr:DontCodeModelManager) {
+  constructor(protected modelMgr:DontCodeModelManager, protected schemaMgr:DontCodeSchemaManager) {
     super();
     this.dataTransformer = new GraphDataTransformer(modelMgr);
     this.data$ = this.dataTransformer.dataObservable();
+    this.option$ = this.dataTransformer.optionObservable ();
   }
 
   providesTemplates(): TemplateList {
@@ -59,7 +64,7 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
 
     const json = this.provider.getJsonAt(pointer.position) as DontCodeReportDisplayType;
     this.dataTransformer.setConfig(json);
-    this.type = this.dataTransformer.translatedType ();
+    this.type = this.dataTransformer.translatedGraphType ();
 
       // Try to guess the field of the target entity of the report that represents the name of the entity
     const reportPosition = DontCodeModelPointer.parentPosition(this.graphModelPointer.containerPosition);
@@ -67,6 +72,15 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
       const entity = this.modelMgr.findTargetOfProperty(DontCodeModel.APP_REPORTS_FOR_NODE, reportPosition);
       if( (entity!=null) && (entity.value!=null)) {
         this.entityNamePropertyName = this.modelMgr.guessPropertyRepresentingName(null, entity.value.fields);
+        // Gets the type information of the target field
+        if (json.of!=null) {
+          for (const field of Object.values<any>(entity.value.fields)) {
+            if( field[DontCodeModel.APP_FIELDS_NAME_NODE]==json.of) {
+              this.dataTransformer.setTargetType (field[DontCodeModel.APP_FIELDS_TYPE_NODE]);
+              break;
+            }
+          }
+        }
       }
       else {
         this.entityNamePropertyName = null;
@@ -84,15 +98,15 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
         this.type=undefined;
       }else {
         this.dataTransformer.setConfig(change.value as DontCodeReportDisplayType);
-        this.type = this.dataTransformer.translatedType();
+        this.type = this.dataTransformer.translatedGraphType();
       }
     } else if (change.position==this.graphModelPointer?.position+'/'+DontCodeModel.APP_REPORTS_DISPLAY_TYPE_NODE) {
       if (change.type===ChangeType.DELETE) {
         this.dataTransformer.setConfig();
         this.type=undefined;
       }else {
-        this.dataTransformer.changeType(change.value as string);
-        this.type = this.dataTransformer.translatedType();
+        this.dataTransformer.changeGraphType(change.value as string);
+        this.type = this.dataTransformer.translatedGraphType();
       }
     }
   }
