@@ -24,6 +24,7 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
   private fullView!: TemplateRef<any>;
 
   type?: string;
+  title="";
 
   provider: CommandProviderInterface | null = null;
   graphModelPointer: DontCodeModelPointer | null = null;
@@ -65,6 +66,7 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
     const json = this.provider.getJsonAt(pointer.position) as DontCodeReportDisplayType;
     this.dataTransformer.setConfig(json);
     this.type = this.dataTransformer.translatedGraphType ();
+    this.title = json.title;
 
       // Try to guess the field of the target entity of the report that represents the name of the entity
     const reportPosition = DontCodeModelPointer.parentPosition(this.graphModelPointer.containerPosition);

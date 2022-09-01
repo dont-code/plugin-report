@@ -23,7 +23,7 @@
           },
           "ac": {
             "name": "Value",
-            "type": "Text"
+            "type": "Number"
           },
           "ad": {
             "name": "From",
@@ -44,11 +44,13 @@
           "as": {
             "ee": {
               "type": "Bar",
-              "of": "Value"
+              "of": "Value",
+              "title": "Values"
             },
             "ef": {
               "type": "Pie",
-              "of": "Amount"
+              "of": "Amount",
+              "title": "Amount"
             },
             "eg": {
               "type": "Table"

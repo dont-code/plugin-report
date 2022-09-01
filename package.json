@@ -26,6 +26,7 @@
     "@dontcode/core": "file:.yalc/@dontcode/core",
     "@dontcode/plugin-basic": "file:.yalc/@dontcode/plugin-basic",
     "@dontcode/plugin-common": "file:.yalc/@dontcode/plugin-common",
+    "@dontcode/plugin-fields": "file:.yalc/@dontcode/plugin-fields",
     "@dontcode/sandbox": "file:.yalc/@dontcode/sandbox",
     "@nrwl/angular": "14.1.9",
     "async-mutex": "^0.3.2",

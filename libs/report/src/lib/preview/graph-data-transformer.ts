@@ -50,85 +50,120 @@ export class GraphDataTransformer {
   }
 
   updateSourceData (srcData:any): void {
-    if (this.config?.of==null) {
+    if (this.config==null) {
       throw new Error ("Cannot process source data without graph configuration");
     }
     if( !Array.isArray(srcData)) {
       srcData = [srcData];
     }
 
-    const data = [];
-    const labels = [];
-    let count=1;
+    if (this.config.type!="Table") {
+      const data = [];
+      const labels = [];
+      let count = 1;
 
-    const metaData=new DataTransformationInfo();
+      const metaData = new DataTransformationInfo();
 
-    const isAmount = this.targetType=='Dollar'||this.targetType=='Euro'||this.targetType=='Other currency';
+      const isAmount = this.targetType == 'Dollar' || this.targetType == 'Euro' || this.targetType == 'Other currency';
 
-    for (const elt of srcData) {
+      let globalCurrency:string|null=null;
 
-      let label;
-      if( this.labelFieldName!=null)
-        label=elt[this.labelFieldName];
-      else {
-        label = count;
-        count++;
-      }
-      if (isAmount) {
-        // For money we store the amount AND the Currency
-        data.push({x:label, y:elt[this.config.of]?.amount, src:elt[this.config.of]});
-      } else {
-        labels.push(label);
-        data.push(this.modelMgr.extractValue (elt[this.config.of], metaData));
-      }
-    }
+      for (const elt of srcData) {
 
-    const chartData:ChartData<any> = {
-      datasets: [
-        {
-          label: this.config.of,
-          data
+        let label;
+        if (this.labelFieldName != null)
+          label = elt[this.labelFieldName];
+        else {
+          label = count;
+          count++;
         }
-      ]
-    };
+        if (this.config.type=='Pie') {
+          labels.push(label);
+          if (isAmount) {
+            data.push(elt[this.config.of].amount);
+            globalCurrency=elt[this.config.of].currencyCode;
+          }
+          else data.push(elt[this.config.of]);
+        } else if (isAmount) {
+          // For money we store the amount AND the Currency
+          data.push({x: label, y: elt[this.config.of]?.amount, src: elt[this.config.of]});
+        } else {
+          labels.push(label);
+          data.push(this.modelMgr.extractValue(elt[this.config.of], metaData));
+        }
+      }
 
-    const chartOption:ChartOptions<any> = {
-    }
+      const chartData: ChartData<any> = {
+        datasets: [
+          {
+            label: this.config.of,
+            data
+          }
+        ]
+      };
 
-    if( !isAmount) {
-      chartData.labels=labels;
-    }else {
-      chartOption.plugins={
-          tooltip: {
-            callbacks: {
-              label: function (context: TooltipItem<any>):string {
-                if ((context.raw as any).src.currencyCode!=null) {
-                  return Intl.NumberFormat (undefined, {style:'currency', currency:(context.raw as any).src.currencyCode }).format(context.parsed.y);
-                } else
+      const chartOption: ChartOptions<any> = {}
+
+      chartOption.plugins = {};
+      chartOption.plugins.title = {
+        align: "center",
+        position: "top",
+        display: true,
+        text: this.config.title
+      }
+
+      if (!isAmount || this.config.type=="Pie") {
+        chartData.labels = labels;
+      }
+      if (isAmount)
+      {
+        chartOption.plugins.tooltip = {
+          callbacks: {
+            label: function (context: TooltipItem<any>): string {
+              if ((context.raw as any)?.src?.currencyCode != null) {
+                return Intl.NumberFormat(undefined, {
+                  style: 'currency',
+                  currency: (context.raw as any).src.currencyCode
+                }).format(context.parsed.y);
+              } else if (globalCurrency!=null) {
+                return Intl.NumberFormat(undefined, {
+                  style: 'currency',
+                  currency: globalCurrency
+                }).format(context.parsed);
+
+              } else
                 return context.parsed.y;
-              }
             }
           }
+        }
       }
+
+      if (this.config.type == 'Bar') {
+        const barChartConfig = chartData as ChartData<'bar'>;
+
+        for (const dataSet of barChartConfig.datasets) {
+          dataSet.backgroundColor = ChartsColors.fillColors;
+        }
+      } else if (this.config.type == 'Pie') {
+        const pieChartConfig = chartData as ChartData<'pie'>;
+
+        for (const dataSet of pieChartConfig.datasets) {
+          dataSet.backgroundColor = ChartsColors.fillColors;
+          dataSet.hoverOffset = 20;
+        }
+
+      } else if (this.config.type == 'Line') {
+        const lineChartConfig = chartData as ChartData<'line'>;
+
+        let position = 0;
+        for (const dataSet of lineChartConfig.datasets) {
+          dataSet.borderColor = ChartsColors.fillColors[position];
+          position++;
+        }
+      }
+      this.data.next(chartData);
+      this.option.next(chartOption);
     }
-
-    if( this.config.type=='Bar') {
-      const barChartConfig = chartData as ChartData<'bar'>;
-
-      for (const dataSet of barChartConfig.datasets) {
-        dataSet.backgroundColor=ChartsColors.fillColors;
-      }
-    } else if (this.config.type=='Line') {
-      const lineChartConfig = chartData as ChartData<'line'>;
-
-      let position=0;
-      for (const dataSet of lineChartConfig.datasets) {
-        dataSet.borderColor=ChartsColors.fillColors[position];
-        position++;
-      }
-    }
-    this.data.next(chartData);
-    this.option.next(chartOption);
   }
 
   setLabelFieldName(fieldName: string) {
