@@ -43,13 +43,14 @@
           "for": "Basic Entity",
           "as": {
             "ee": {
-              "type": "Bar",
+              "type": "Pie",
               "of": "Value",
               "title": "Values"
             },
             "ef": {
-              "type": "Pie",
+              "type": "Bar",
               "of": "Amount",
+              "by": "From",
               "title": "Amount"
             },
             "eg": {
