@@ -130,6 +130,7 @@ describe('GraphDataTransformer', () => {
       expect(result.labels).toEqual(['Test1', 'Test2']);
       expect(result.datasets).toHaveLength(1);
       expect(result.datasets[0].data).toHaveLength(2);
+      // Not sure its normal to have the objects in data...
       expect(result.datasets[0].data).toEqual([{value:null, label:'Label'}, {value:343, label:'Label2'}]);
     })))
   });
