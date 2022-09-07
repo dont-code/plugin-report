@@ -50,6 +50,7 @@ describe('GraphDataTransformer', () => {
     });
 
     toTest.setLabelFieldName('name');
+    toTest.setTargetType("Euro");
 
     toTest.updateSourceData ([{
       name: 'Test1',
@@ -97,7 +98,7 @@ describe('GraphDataTransformer', () => {
       expect(result.labels).toEqual(['Test1', 'Test2']);
       expect(result.datasets).toHaveLength(1);
       expect(result.datasets[0].data).toHaveLength(2);
-      expect(result.datasets[0].data[0]).toBeInstanceOf(Date);
+      expect(typeof result.datasets[0].data[0]).toEqual('number');
     })))
   });
 
@@ -120,7 +121,7 @@ describe('GraphDataTransformer', () => {
       name:'Test2',
       object: {
         value: 343,
-        label: 'label2'
+        label: 'Label2'
         }
     }]);
 
@@ -129,7 +130,7 @@ describe('GraphDataTransformer', () => {
       expect(result.labels).toEqual(['Test1', 'Test2']);
       expect(result.datasets).toHaveLength(1);
       expect(result.datasets[0].data).toHaveLength(2);
-      expect(result.datasets[0].data).toEqual([null, 343]);
+      expect(result.datasets[0].data).toEqual([{value:null, label:'Label'}, {value:343, label:'Label2'}]);
     })))
   });
 
