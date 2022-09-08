@@ -1,4 +1,7 @@
-import { Plugin, DontCodeModel, PluginConfig, Core } from '@dontcode/core';
+import {Core, DontCodeModel, Plugin, PluginConfig} from '@dontcode/core';
+import {_adapters, Chart} from "chart.js";
+import autocolors from 'chartjs-plugin-autocolors-typescript';
+import {StdDateAdapter} from "chartjs-adapter-date-std";
 
 /**
  * This plugin demonstrate 2 things:
@@ -6,6 +9,12 @@ import { Plugin, DontCodeModel, PluginConfig, Core } from '@dontcode/core';
  * - As well it adds a new attribute 'seed' to any Entity and provides a viewer for the Previewer when its value is Yes or Maybe.
  */
 export class ReportPlugin implements Plugin {
+
+  constructor() {
+    Chart.register(autocolors);
+    _adapters._date.override( StdDateAdapter.chartJsStandardAdapter());
+  }
+
   getConfiguration(): PluginConfig {
     return {
       plugin: {

@@ -50,94 +50,154 @@ export class GraphDataTransformer {
   }
 
   updateSourceData (srcData:any): void {
-    if (this.config?.of==null) {
+    if (this.config==null) {
       throw new Error ("Cannot process source data without graph configuration");
     }
     if( !Array.isArray(srcData)) {
       srcData = [srcData];
     }
 
-    const data = [];
-    const labels = [];
-    let count=1;
+    const isAmount = this.targetType == 'Dollar' || this.targetType == 'Euro' || this.targetType == 'Other currency';
+    let byDate = false;
 
-    const metaData=new DataTransformationInfo();
+    if (this.config.type!="Table") {
+      const data = [];
+      const labels = [];
+      let count = 1;
 
-    const isAmount = this.targetType=='Dollar'||this.targetType=='Euro'||this.targetType=='Other currency';
+      const metaData = new DataTransformationInfo();
+      const isBiDirectional = this.config.type!='Pie';
 
-    for (const elt of srcData) {
+      let globalCurrency:string|null=null;
 
-      let label;
-      if( this.labelFieldName!=null)
-        label=elt[this.labelFieldName];
-      else {
-        label = count;
-        count++;
-      }
-      if (isAmount) {
-        // For money we store the amount AND the Currency
-        data.push({x:label, y:elt[this.config.of]?.amount, src:elt[this.config.of]});
-      } else {
-        labels.push(label);
-        data.push(this.modelMgr.extractValue (elt[this.config.of], metaData));
-      }
-    }
+      let xFieldName=this.labelFieldName;
+      if( this.config.by!=null)
+        xFieldName = this.config.by;
+      for (const elt of srcData) {
 
-    const chartData:ChartData<any> = {
-      datasets: [
-        {
-          label: this.config.of,
-          data
+        let label;
+        if (xFieldName != null) {
+          if (elt[xFieldName] instanceof Date) byDate=true;
+          label = this.translateDateValue (elt[xFieldName]);
         }
-      ]
-    };
+        else {
+          label = count;
+          count++;
+        }
 
-    const chartOption:ChartOptions<any> = {
-    }
+        labels.push(label);
+        if (!isBiDirectional) {
+          if (isAmount) {
+            data.push(elt[this.config.of].amount);
+            globalCurrency=elt[this.config.of].currencyCode;
+          }
+          else data.push(this.translateDateValue(elt[this.config.of]));
+        } else if (isAmount) {
+          // For money we store the amount AND the Currency
+          data.push({x: label, y: elt[this.config.of]?.amount, src: elt[this.config.of]});
+        } else {
+          data.push(this.translateDateValue(this.modelMgr.extractValue(elt[this.config.of], metaData)));
+        }
+      }
 
-    if( !isAmount) {
-      chartData.labels=labels;
-    }else {
-      chartOption.plugins={
-          tooltip: {
-            callbacks: {
-              label: function (context: TooltipItem<any>):string {
-                if ((context.raw as any).src.currencyCode!=null) {
-                  return Intl.NumberFormat (undefined, {style:'currency', currency:(context.raw as any).src.currencyCode }).format(context.parsed.y);
-                } else
+      const chartData: ChartData<any> = {
+        datasets: [
+          {
+            label: this.config.of,
+            data
+          }
+        ]
+      };
+
+      const chartOption: ChartOptions<any> = {}
+
+      chartOption.plugins = {};
+      chartOption.plugins.title = {
+        align: "center",
+        position: "top",
+        display: true,
+        text: this.config.title
+      }
+
+   //   if (!isAmount || !isBiDirectional) {
+        chartData.labels = labels;
+   //   }
+
+      if( byDate) {
+        chartOption.scales = {
+            x: {
+              type: 'time'
+          }
+        }
+      }
+      chartOption.plugins.autocolors = {
+          mode: 'data',
+          offset:2
+      }
+
+      if (isAmount)
+      {
+        chartOption.plugins.tooltip = {
+          callbacks: {
+            label: function (context: TooltipItem<any>): string {
+              if ((context.raw as any)?.src?.currencyCode != null) {
+                return Intl.NumberFormat(undefined, {
+                  style: 'currency',
+                  currency: (context.raw as any).src.currencyCode
+                }).format(context.parsed.y);
+              } else if (globalCurrency!=null) {
+                return Intl.NumberFormat(undefined, {
+                  style: 'currency',
+                  currency: globalCurrency
+                }).format(context.parsed);
+
+              } else
                 return context.parsed.y;
-              }
             }
           }
+        }
       }
+
+      if (this.config.type == 'Bar') {
+        const barChartConfig = chartData as ChartData<'bar'>;
+
+        /*for (const dataSet of barChartConfig.datasets) {
+          dataSet.backgroundColor = ChartsColors.fillColors;
+        }*/
+      } else if (this.config.type == 'Pie') {
+        const pieChartConfig = chartData as ChartData<'pie'>;
+
+        for (const dataSet of pieChartConfig.datasets) {
+          //dataSet.backgroundColor = ChartsColors.fillColors;
+          dataSet.hoverOffset = 20;
+        }
+
+      } else if (this.config.type == 'Line') {
+        const lineChartConfig = chartData as ChartData<'line'>;
+
+        /*let position = 0;
+        for (const dataSet of lineChartConfig.datasets) {
+          dataSet.borderColor = ChartsColors.fillColors[position];
+          position++;
+        }*/
+      }
+      this.data.next(chartData);
+      this.option.next(chartOption);
     }
-
-    if( this.config.type=='Bar') {
-      const barChartConfig = chartData as ChartData<'bar'>;
-
-      for (const dataSet of barChartConfig.datasets) {
-        dataSet.backgroundColor=ChartsColors.fillColors;
-      }
-    } else if (this.config.type=='Line') {
-      const lineChartConfig = chartData as ChartData<'line'>;
-
-      let position=0;
-      for (const dataSet of lineChartConfig.datasets) {
-        dataSet.borderColor=ChartsColors.fillColors[position];
-        position++;
-      }
-    }
-    this.data.next(chartData);
-    this.option.next(chartOption);
   }
 
   setLabelFieldName(fieldName: string) {
     this.labelFieldName = fieldName;
   }
 
+  private translateDateValue(eltElement: any) {
+    if (eltElement instanceof Date) {
+      return (eltElement as Date).valueOf();
+    }else return eltElement;
+  }
 }
 
-class ChartsColors {
+/* class ChartsColors {
   public static fillColors=[
     '#42A5F5',
     '#7E57C2',
@@ -147,4 +207,4 @@ class ChartsColors {
     '#EC407A',
     '#AB47BC'
   ]
-}
+}*/

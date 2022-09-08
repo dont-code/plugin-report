@@ -12,10 +12,10 @@ import {ChartModule} from "primeng/chart";
 @NgModule({
     imports: [
         CommonModule,
-        PluginCommonModule.forRoot(),
         ReactiveFormsModule,
         DropdownModule,
         ChartModule,
+        PluginCommonModule.forRoot()
     ],
   declarations: [ReportDisplayComponent, ReportEntityComponent],
   id: 'dontcode-plugin/report', // A module containing previewer components must have an id to be found by the dont-code platform.

@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReportModule } from '@dontcode/report';
 import { PluginCommonModule } from '@dontcode/plugin-common';
 import { BasicModule } from '@dontcode/plugin-basic';
+import {FieldsModule} from "@dontcode/plugin-fields";
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,6 +31,7 @@ import { BasicModule } from '@dontcode/plugin-basic';
     }),
     PluginCommonModule.forRoot(),
     BasicModule,
+    FieldsModule,
     SandboxModule.forRoot({
       webSocketUrl: environment.webSocketUrl,
       indexedDbName: 'Report Plugin Tester',

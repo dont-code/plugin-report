@@ -23,7 +23,7 @@
           },
           "ac": {
             "name": "Value",
-            "type": "Text"
+            "type": "Number"
           },
           "ad": {
             "name": "From",
@@ -43,12 +43,15 @@
           "for": "Basic Entity",
           "as": {
             "ee": {
-              "type": "Bar",
-              "of": "Value"
+              "type": "Pie",
+              "of": "Value",
+              "title": "Values"
             },
             "ef": {
-              "type": "Pie",
-              "of": "Amount"
+              "type": "Bar",
+              "of": "Amount",
+              "by": "From",
+              "title": "Amount"
             },
             "eg": {
               "type": "Table"
