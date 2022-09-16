@@ -75,29 +75,29 @@ export class GraphDataTransformer {
         xFieldName = this.config.by;
       for (const elt of srcData) {
 
-        let label;
-        if (xFieldName != null) {
-          if (elt[xFieldName] instanceof Date) byDate=true;
-          label = this.translateDateValue (elt[xFieldName]);
-        }
-        else {
-          label = count;
-          count++;
-        }
-
-        labels.push(label);
-        if (!isBiDirectional) {
-          if (isAmount) {
-            data.push(elt[this.config.of].amount);
-            globalCurrency=elt[this.config.of].currencyCode;
+          let label;
+          if (xFieldName != null) {
+            if (elt[xFieldName] instanceof Date) byDate=true;
+            label = this.translateDateValue (elt[xFieldName]);
           }
-          else data.push(this.translateDateValue(elt[this.config.of]));
-        } else if (isAmount) {
-          // For money we store the amount AND the Currency
-          data.push({x: label, y: elt[this.config.of]?.amount, src: elt[this.config.of]});
-        } else {
-          data.push(this.translateDateValue(this.modelMgr.extractValue(elt[this.config.of], metaData)));
-        }
+          else {
+            label = count;
+            count++;
+          }
+
+          labels.push(label);
+          if (!isBiDirectional) {
+            if (isAmount) {
+              data.push(elt[this.config.of].amount);
+              globalCurrency=elt[this.config.of].currencyCode;
+            }
+            else data.push(this.translateDateValue(elt[this.config.of]));
+          } else if (isAmount) {
+            // For money we store the amount AND the Currency
+            data.push({x: label, y: elt[this.config.of]?.amount, src: elt[this.config.of]});
+          } else {
+            data.push({x: label, y:this.translateDateValue(this.modelMgr.extractValue(elt[this.config.of], metaData))});
+          }
       }
 
       const chartData: ChartData<any> = {
@@ -119,9 +119,9 @@ export class GraphDataTransformer {
         text: this.config.title
       }
 
-   //   if (!isAmount || !isBiDirectional) {
+      if (!isAmount || !isBiDirectional) {
         chartData.labels = labels;
-   //   }
+      }
 
       if( byDate) {
         chartOption.scales = {
@@ -130,9 +130,17 @@ export class GraphDataTransformer {
           }
         }
       }
-      chartOption.plugins.autocolors = {
-          mode: 'data',
+      if( this.config.type!="Line") {
+        chartOption.plugins.autocolors = {
+            mode: 'data',
+            offset:2
+        }
+      } else {
+        chartOption.plugins.autocolors = {
+          mode: 'dataset',
           offset:2
+        }
+
       }
 
       if (isAmount)
