@@ -88,8 +88,8 @@ export class GraphDataTransformer {
           labels.push(label);
           if (!isBiDirectional) {
             if (isAmount) {
-              data.push(elt[this.config.of].amount);
-              globalCurrency=elt[this.config.of].currencyCode;
+              data.push(elt[this.config.of]?.amount);
+              globalCurrency=elt[this.config.of]?.currencyCode??globalCurrency;
             }
             else data.push(this.translateDateValue(elt[this.config.of]));
           } else if (isAmount) {
