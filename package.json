@@ -33,7 +33,7 @@
     "broadcast-channel": "^4.11.0",
     "chart.js": "^3.9.1",
     "chartjs-adapter-date-std": "^0.1.4",
-    "chartjs-plugin-autocolors-typescript": "^0.0.7",
+    "chartjs-plugin-autocolors-typescript": "^0.0.8",
     "dexie": "^3.2.1",
     "jsonpath-plus": "^7.0.0",
     "primeflex": "^3.1.3",
