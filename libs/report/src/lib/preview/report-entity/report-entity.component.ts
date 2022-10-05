@@ -1,8 +1,8 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@angular/core';
 import {
-  ComponentLoaderService, EntityListManager, EntityStoreService, FormElement,
+  ComponentLoaderService, EntityListManager, EntityStoreService,
   PluginBaseComponent,
-  PossibleTemplateList,
+  PossibleTemplateList, SubFieldInfo,
   TemplateList,
 } from '@dontcode/plugin-common';
 import {Change, ChangeType, CommandProviderInterface, DontCodeModel, DontCodeModelPointer} from '@dontcode/core';
@@ -89,6 +89,18 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
     throw new Error('Method not implemented.');
   }
 
+  override setValue(val: any) {
+    // Just ignore it
+    console.debug("setValue() called for ReportEntity");
+  }
+
+  override getValue(): any {
+    // Just ignore as well
+    console.debug("getValue() called for ReportEntity");
+    return undefined;
+  }
+
+
   handleChange(change: Change): void {
     if (change?.pointer?.positionInSchema === DontCodeModel.APP_REPORTS_DISPLAY) {
       this.updateSubFieldsWithChange(change, DontCodeModel.APP_REPORTS_DISPLAY_NODE).then(value => {
@@ -111,11 +123,11 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
     }
   }
 
-  templateOf(field: FormElement): TemplateRef<any> {
-    let ref = field.component?.providesTemplates(field.type).forFullView;
-    if (!ref) ref = this.defaultTemplate;
-
-    return ref;
+  override subFieldFullViewTemplate(subField: string | SubFieldInfo): TemplateRef<any> | null {
+    let ret = super.subFieldFullViewTemplate(subField);
+    if( ret==null)
+      ret = this.defaultTemplate;
+    return ret;
   }
 
 }

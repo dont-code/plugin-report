@@ -1,9 +1,6 @@
 import {
   clickAutoComplete,
   getContentArea,
-  getDropdownListItemWithName,
-  getDropdownWithName,
-  getInputWithName,
   getSendButton,
   getSubMenuWithText,
   selectPopupChoiceWithText,

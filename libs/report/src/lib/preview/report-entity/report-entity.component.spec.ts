@@ -10,8 +10,7 @@ import {
   DontCodeTestManager,
   dtcde
 } from "@dontcode/core";
-import {delay, from, map, Observable, of, Subject, take, takeUntil, timer} from "rxjs";
-import {compileClassMetadata} from "@angular/compiler";
+import {Observable} from "rxjs";
 
 describe('ReportEntityComponent', () => {
   let component: ReportEntityComponent;
@@ -79,7 +78,7 @@ describe('ReportEntityComponent', () => {
     fixture.detectChanges();
 
     DontCodeTestManager.waitUntilTrue(() => {
-      return (component.fields.length == 1) && (component.title=='Test');
+      return (component.getSubFields().length == 1) && (component.title=='Test');
     }, done);
   });
 });
