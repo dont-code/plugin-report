@@ -62,6 +62,23 @@
     ]
   },
   {
+    "name": "Add by Type graph",
+    "sequence": [
+      {
+        "position": "creation/reports/e/as",
+        "type": "ADD",
+        "value": {
+          "eh": {
+            "type": "Bar",
+            "of": "Value",
+            "by": "Type",
+            "title": "Value by Type"
+          }
+        }
+      }
+    ]
+  },
+  {
     "name": "Switch graphs position",
     "sequence": [
       {
