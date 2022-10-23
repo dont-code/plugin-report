@@ -23,9 +23,9 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
   store:EntityListManager|null=null;
   dataLoading = false;
 
-  constructor(loader: ComponentLoaderService, protected entityService:EntityStoreService, protected valueService: ValueService, injector: Injector, private ref: ChangeDetectorRef
+  constructor(loader: ComponentLoaderService, protected entityService:EntityStoreService, protected valueService: ValueService, injector: Injector, ref: ChangeDetectorRef
   ) {
-    super(loader, injector);
+    super(loader, injector, ref);
   }
 
   override initCommandFlow(
