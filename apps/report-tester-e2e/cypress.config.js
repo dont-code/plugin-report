@@ -1,12 +1,16 @@
-{
+const { defineConfig } = require('cypress')
+
+module.exports = defineConfig({
   "fileServerFolder": ".",
   "fixturesFolder": "./src/fixtures",
-  "integrationFolder": "./src/integration",
   "modifyObstructiveCode": false,
-  "pluginsFile": "./src/plugins/index",
-  "supportFile": "./src/support/index.ts",
   "video": true,
   "videosFolder": "../../dist/cypress/apps/report-tester-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/report-tester-e2e/screenshots",
-  "chromeWebSecurity": false
-}
+  "chromeWebSecurity": false,
+  e2e: {
+    setupNodeEvents(on, config) {},
+    specPattern: './src/integration/**/*.cy.{js,jsx,ts,tsx}',
+    supportFile: './src/support/index.ts'
+  },
+})
