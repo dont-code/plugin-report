@@ -1,4 +1,5 @@
 {
+  "name": "report-tester",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/report-tester/src",
@@ -6,7 +7,9 @@
   "targets": {
     "build": {
       "executor": "@nrwl/angular:webpack-browser",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/report-tester",
         "index": "apps/report-tester/src/index.html",
@@ -39,10 +42,11 @@
           "./node_modules/primeng/resources/primeng.min.css",
           "./node_modules/primeng/resources/themes/saga-blue/theme.css",
           "./node_modules/primeflex/primeflex.min.css",
-          "./node_modules/primeicons/primeicons.css",
-          "./node_modules/chart.js/dist/chart.js"
+          "./node_modules/primeicons/primeicons.css"
         ],
-        "scripts": [],
+        "scripts": [
+          "./node_modules/chart.js/dist/chart.umd.js"
+        ],
         "customWebpackConfig": {
           "path": "apps/report-tester/webpack.config.js"
         }
@@ -83,7 +87,7 @@
       "defaultConfiguration": "production"
     },
     "serve": {
-      "executor": "@nrwl/angular:webpack-server",
+      "executor": "@nrwl/angular:webpack-dev-server",
       "configurations": {
         "production": {
           "browserTarget": "report-tester:build:production"
@@ -115,7 +119,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/report-tester"],
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/report-tester"
+      ],
       "options": {
         "jestConfig": "apps/report-tester/jest.config.ts",
         "passWithNoTests": true

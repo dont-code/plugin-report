@@ -1,13 +1,16 @@
 {
+  "name": "report",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/report/src",
   "prefix": "dontcode",
   "targets": {
     "build": {
       "executor": "@nrwl/angular:package",
-      "outputs": ["dist/libs/report"],
+      "outputs": ["{workspaceRoot}/dist/libs/report"],
       "options": {
-        "project": "libs/report/ng-package.json"
+        "project": "libs/report/ng-package.json",
+        "updateBuildableProjectDepsInPackageJson": false
       },
       "configurations": {
         "production": {
@@ -21,7 +24,7 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/report"],
+      "outputs": ["{workspaceRoot}/coverage/libs/report"],
       "options": {
         "jestConfig": "libs/report/jest.config.ts",
         "passWithNoTests": true

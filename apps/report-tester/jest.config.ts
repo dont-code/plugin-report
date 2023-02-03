@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default {
   displayName: 'report-tester',
   preset: '../../jest.preset.js',
