@@ -73,7 +73,7 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
     if (reportPosition  != null) {
       const entity = this.modelMgr.findTargetOfProperty(DontCodeModel.APP_REPORTS_FOR_NODE, reportPosition);
       if( (entity!=null) && (entity.value!=null)) {
-        this.entityNamePropertyName = this.modelMgr.guessPropertyRepresentingName(null, entity.value.fields);
+        this.entityNamePropertyName = this.modelMgr.guessNamePropertyOfElement(null, entity.value.fields);
         // Gets the type information of the target field
         if (json.of!=null) {
           for (const field of Object.values<any>(entity.value.fields)) {
