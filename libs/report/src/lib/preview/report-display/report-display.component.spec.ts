@@ -41,7 +41,7 @@ describe('ReportFieldComponent', () => {
             fields: {
               'aaa': {
                 name: 'name',
-                type: 'string'
+                type: 'Text'
               },
               'aab': {
                 name: 'value',
