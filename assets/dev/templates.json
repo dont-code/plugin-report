@@ -1,0 +1,97 @@
+[
+  {
+    "name": "Test Basic Report",
+    "sequence": [
+      {
+        "position": "creation/entities/a",
+        "type": "ADD",
+        "value": {
+          "name": "Basic Entity"
+        }
+      },
+      {
+        "position": "creation/entities/a/fields",
+        "type": "ADD",
+        "value": {
+          "aa": {
+            "name": "Name",
+            "type": "Text"
+          },
+          "ab": {
+            "name": "Type",
+            "type": "Text"
+          },
+          "ac": {
+            "name": "Value",
+            "type": "Number"
+          },
+          "ad": {
+            "name": "From",
+            "type": "Date"
+          },
+          "ae": {
+            "name": "Amount",
+            "type": "Euro"
+          }
+        }
+      },
+      {
+        "position": "creation/reports/e",
+        "type": "ADD",
+        "value": {
+          "title": "Basic Report",
+          "for": "Basic Entity",
+          "as": {
+            "ee": {
+              "type": "Pie",
+              "of": "Value",
+              "title": "Values"
+            },
+            "ef": {
+              "type": "Bar",
+              "of": "Amount",
+              "by": "From",
+              "title": "Amount"
+            },
+            "eg": {
+              "type": "Table"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Add by Type graph",
+    "sequence": [
+      {
+        "position": "creation/reports/e/as",
+        "type": "ADD",
+        "value": {
+          "eh": {
+            "type": "Bar",
+            "of": "Value",
+            "by": "Type",
+            "title": "Value by Type"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Switch graphs position",
+    "sequence": [
+      {
+        "position": "creation/reports/e/as/eg",
+        "type": "MOVE",
+        "value": "ef"
+      }
+    ]
+  },
+  {
+    "name": "Empty Application",
+    "type": "RESET",
+    "position": "creation",
+    "value": null
+  }
+]
