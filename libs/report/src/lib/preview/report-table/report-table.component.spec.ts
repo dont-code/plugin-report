@@ -1,31 +1,29 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import {ReportDisplayComponent} from './report-display.component';
-import {EntityListManager, PluginCommonModule} from '@dontcode/plugin-common';
+import {ReportTableComponent} from './report-table.component';
+import {EntityListManager, PluginCommonModule} from "@dontcode/plugin-common";
 import {DontCodeTestManager, dtcde, TestProviderInterface} from "@dontcode/core";
-import {firstValueFrom, map} from "rxjs";
 
-describe('ReportDisplayComponent', () => {
-  let component: ReportDisplayComponent;
-  let fixture: ComponentFixture<ReportDisplayComponent>;
+describe('ReportTableComponent', () => {
+  let component: ReportTableComponent;
+  let fixture: ComponentFixture<ReportTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReportDisplayComponent],
-      imports: [PluginCommonModule.forRoot()],
+      declarations: [ReportTableComponent],
+      imports: [PluginCommonModule.forRoot()]
     }).compileComponents();
-  });
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ReportDisplayComponent);
+    fixture = TestBed.createComponent(ReportTableComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should generate a pie chart', () => {
+  it('should display a grouped table', (done) => {
     dtcde.getModelManager().resetContent({
       creation: {
         entities: {
@@ -49,8 +47,8 @@ describe('ReportDisplayComponent', () => {
             for: 'Entity1',
             as: {
               'baa': {
-                title: 'Pie Chart',
-                type: 'Pie',
+                title: 'Simple Table',
+                type: 'Table',
                 of: 'value'
               }
             }
@@ -71,26 +69,26 @@ describe('ReportDisplayComponent', () => {
     const entityPointer = provider.calculatePointerFor('creation/reports/ba/as/baa');
     component.initCommandFlow(provider, entityPointer);
 
-    fixture.detectChanges();
-    fixture.whenStable().then(() => {
-      component.setValue(new TestEntityListManager ('creation/entities/aa',[{
-        name: 'Test1',
-        value: 123
-      }, {
-        name: 'Test2',
-        value: 456
-      }]));
+    DontCodeTestManager.waitUntilTrueAndEmit(() => {
+      console.log("Here");
+      return component.cols.length==2;
+    }, 20, 5).then (value => {
+      if( !value) done("No column values are updated");
 
       fixture.detectChanges();
-    });
+      fixture.whenStable().then(() => {
+        component.setValue(new TestEntityListManager ('creation/entities/aa',[{
+          name: 'Test1',
+          value: 123
+        }, {
+          name: 'Test2',
+          value: 456
+        }]));
 
-    return firstValueFrom(component.chartData$.pipe(map(data => {
-      expect (data.labels).not.toBeNull();
-      expect (component.entityNamePropertyName).toEqual ("name");
-      return data;
-    })));
-
-
+        fixture.detectChanges();
+      });
+    }).catch(error => done(error))
+      .finally(() => done());
   });
 
 });

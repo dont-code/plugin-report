@@ -1,5 +1,4 @@
 <ng-template #fullView>
-  <p-chart *ngIf="type!==null&&type!=='table'" [data]="data$ | async" [options]="option$ | async" [type]="type!" ></p-chart>
-  <ng-container *ngIf="type===null">Please define a graph type</ng-container>
-  <ng-container *ngIf="type==='table'">Tabular view here</ng-container>
+  <p-chart *ngIf="type!==undefined" [data]="chartData$ | async" [options]="chartOption$ | async" [type]="type!" ></p-chart>
+  <ng-container *ngIf="type===undefined">Please define a graph type</ng-container>
 </ng-template>

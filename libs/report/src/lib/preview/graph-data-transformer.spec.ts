@@ -1,6 +1,8 @@
 import {GraphDataTransformer} from "./graph-data-transformer";
 import {firstValueFrom, map} from "rxjs";
 import {dtcde} from "@dontcode/core";
+import {EntityListManager} from "@dontcode/plugin-common";
+
 
 describe('GraphDataTransformer', () => {
   // let component: ReportDisplayComponent;
@@ -25,13 +27,13 @@ describe('GraphDataTransformer', () => {
       title: 'Pie Chart'
     });
 
-    toTest.updateSourceData ([{
+    toTest.updateSourceData (new TestEntityListManager('',[{
       whatever: 'Test1',
       value: 123
     }, {
       whatever: 'Test2',
       value: 456
-    }]);
+    }]));
 
     return firstValueFrom(toTest.dataObservable().pipe(map (result => {
       expect(result.labels).not.toBeNull();
@@ -52,7 +54,7 @@ describe('GraphDataTransformer', () => {
     toTest.setLabelFieldName('name');
     toTest.setTargetType("Euro");
 
-    toTest.updateSourceData ([{
+    toTest.updateSourceData (new TestEntityListManager ('',[{
       name: 'Test1',
       object: {
         amount: 343,
@@ -65,7 +67,7 @@ describe('GraphDataTransformer', () => {
         currency: 'USD'
 
       }
-    }]);
+    }]));
 
     return firstValueFrom(toTest.dataObservable().pipe(map (result => {
       expect(result.labels).not.toBeNull();
@@ -85,13 +87,13 @@ describe('GraphDataTransformer', () => {
 
     toTest.setLabelFieldName('name');
 
-    toTest.updateSourceData ([{
+    toTest.updateSourceData (new TestEntityListManager('',[{
       name: 'Test1',
       object: new Date()
     }, {
       name: 'Test2',
       object: new Date()
-    }]);
+    }]));
 
     return firstValueFrom(toTest.dataObservable().pipe(map (result => {
       expect(result.labels).not.toBeNull();
@@ -111,7 +113,7 @@ describe('GraphDataTransformer', () => {
 
     toTest.setLabelFieldName('name');
 
-    toTest.updateSourceData ([{
+    toTest.updateSourceData ( new TestEntityListManager('',[{
       name: 'Test1',
       object: {
         value: null,
@@ -123,7 +125,7 @@ describe('GraphDataTransformer', () => {
         value: 343,
         label: 'Label2'
         }
-    }]);
+    }]));
 
     return firstValueFrom(toTest.dataObservable().pipe(map (result => {
       expect(result.labels).not.toBeNull();
@@ -135,4 +137,13 @@ describe('GraphDataTransformer', () => {
     })))
   });
 
+
 });
+
+class TestEntityListManager extends EntityListManager {
+  constructor(position:string, values:any[]) {
+    super(position, {}, dtcde.getStoreManager());
+    this.entities=values as never[];
+  }
+
+}

@@ -1,6 +1,6 @@
 [
   {
-    "name": "Test Basic Report",
+    "name": "Define test data",
     "sequence": [
       {
         "position": "creation/entities/a",
@@ -34,7 +34,12 @@
             "type": "Euro"
           }
         }
-      },
+      }
+    ]
+  },
+  {
+    "name": "Test Basic Report",
+    "sequence": [
       {
         "position": "creation/reports/e",
         "type": "ADD",
@@ -62,11 +67,11 @@
     ]
   },
   {
-    "name": "Add by Type graph",
+    "name": "By Type graph",
     "sequence": [
       {
         "position": "creation/reports/e/as",
-        "type": "ADD",
+        "type": "UPDATE",
         "value": {
           "eh": {
             "type": "Bar",
@@ -74,6 +79,40 @@
             "by": "Type",
             "title": "Value by Type"
           }
+        }
+      }
+    ]
+  },
+  {
+    "name": "Test Tables",
+    "sequence": [
+      {
+        "position": "creation/reports/f",
+        "type": "ADD",
+        "value": {
+          "title": "Table Reports",
+          "for": "Basic Entity",
+          "groupedBy": [{
+            "label": "By Type",
+            "of": "Type",
+            "display": [{
+              "operation": "Count",
+              "of": "Value",
+              "label": "Elements #"
+            },
+            {
+              "operation": "Minimum",
+              "of": "Amount",
+              "label": "Min cost"
+            }]
+          }],
+          "as": [{
+           "fh": {
+              "type": "Table",
+             "title": "Infos"
+            }
+          }
+          ]
         }
       }
     ]

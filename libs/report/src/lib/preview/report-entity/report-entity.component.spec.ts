@@ -64,11 +64,11 @@ describe('ReportEntityComponent', () => {
     });
 
     DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
-      name: 'Test1',
-      value: 123
+      Name: 'Test1',
+      Value: 123
     }, {
-      name: 'Test2',
-      value: 456
+      Name: 'Test2',
+      Value: 456
     }]);
 
     const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
@@ -79,6 +79,84 @@ describe('ReportEntityComponent', () => {
 
     DontCodeTestManager.waitUntilTrue(() => {
       return (component.getSubFields().length == 1) && (component.title=='Test');
+    }, done);
+  });
+
+
+  it ('should manage grouping', (done) => {
+
+    dtcde.getModelManager().resetContent({
+      creation: {
+        entities: {
+          'aa': {
+            name: 'SimpleEntity',
+            fields: {
+              'aaa': {
+                name: 'Name',
+                type: 'string'
+              },
+              'aab': {
+                name: 'Value',
+                type: 'number'
+              }
+            }
+          }
+        },
+        reports: {
+          'ba': {
+            title: 'SimpleTest',
+            for: 'SimpleEntity',
+            groupedBy: [{
+              "label": "By Name",
+              "of": "Name",
+              "display": [{
+                "operation": "Count",
+                "of": "Name",
+                "label": "#"
+              },
+                {
+                  "operation": "Sum",
+                  "of": "Value",
+                  "label": "Sum"
+                }
+                ]
+              }],
+            as: {
+              'baa': {
+                title: 'Simple Table',
+                type: 'Table'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+      name: 'Test1',
+      value: 123
+    }, {
+      name: 'Test2',
+      value: 456
+    },{
+      name: 'Test1',
+      value: 432
+    }, {
+      name: 'Test2',
+      value: 124
+    }, {
+      name: 'Test2',
+      value: 642
+    }]);
+
+    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
+    const entityPointer = provider.calculatePointerFor('creation/reports/ba');
+    component.initCommandFlow(provider, entityPointer);
+
+    fixture.detectChanges();
+
+    DontCodeTestManager.waitUntilTrue(() => {
+      return (component.reportEntityData?.groupedByEntities?.values?.length==2);
     }, done);
   });
 });

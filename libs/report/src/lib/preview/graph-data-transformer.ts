@@ -1,6 +1,12 @@
-import {DataTransformationInfo, DontCodeModelManager, DontCodeReportDisplayType} from "@dontcode/core";
+import {
+  DataTransformationInfo,
+  DontCodeModelManager,
+  DontCodeReportDisplayType,
+  DontCodeStorePreparedEntities
+} from "@dontcode/core";
 import {Observable, ReplaySubject} from "rxjs";
 import {ChartData, ChartOptions, ChartType, DefaultDataPoint, TooltipItem} from "chart.js";
+import {EntityListManager} from "@dontcode/plugin-common";
 
 /**
  * Calculates the correct data to generate a graph based on the configuration of the model
@@ -49,12 +55,9 @@ export class GraphDataTransformer {
     return this.option.asObservable();
   }
 
-  updateSourceData (srcData:any): void {
+  updateSourceData (srcData:EntityListManager): void {
     if (this.config==null) {
       throw new Error ("Cannot process source data without graph configuration");
-    }
-    if( !Array.isArray(srcData)) {
-      srcData = [srcData];
     }
 
     const isAmount = this.targetType == 'Dollar' || this.targetType == 'Euro' || this.targetType == 'Other currency';
@@ -73,7 +76,7 @@ export class GraphDataTransformer {
       let xFieldName=this.labelFieldName;
       if( this.config.by!=null)
         xFieldName = this.config.by;
-      for (const elt of srcData) {
+      for (const elt of (srcData.entities as any[])) {
 
           let label;
           if (xFieldName != null) {
@@ -216,3 +219,4 @@ export class GraphDataTransformer {
     '#AB47BC'
   ]
 }*/
+

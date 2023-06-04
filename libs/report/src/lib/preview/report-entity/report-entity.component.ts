@@ -1,12 +1,25 @@
 import {AfterViewInit, ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@angular/core';
 import {
-  ComponentLoaderService, EntityListManager, EntityStoreService,
+  ComponentLoaderService,
+  EntityListManager,
+  EntityStoreService,
   PluginBaseComponent,
-  PossibleTemplateList, SubFieldInfo,
+  PossibleTemplateList,
+  SubFieldInfo,
   TemplateList,
+  ValueService,
 } from '@dontcode/plugin-common';
-import {Change, ChangeType, CommandProviderInterface, DontCodeModel, DontCodeModelPointer} from '@dontcode/core';
-import {ValueService} from "@dontcode/plugin-common";
+import {
+  Change,
+  ChangeType,
+  CommandProviderInterface,
+  DontCodeModel,
+  DontCodeModelPointer,
+  DontCodeReportType,
+  DontCodeSchemaManager,
+  DontCodeStorePreparedEntities,
+  dtcde
+} from '@dontcode/core';
 
 @Component({
   selector: 'dontcode-report-entity',
@@ -22,10 +35,15 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
 
   store:EntityListManager|null=null;
   dataLoading = false;
+  reportDescription:DontCodeReportType|null=null;
+  reportEntityData = new DontCodeStorePreparedEntities<never> ([]);
+  targetEntityPointer: DontCodeModelPointer|null=null;
 
   constructor(loader: ComponentLoaderService, protected entityService:EntityStoreService, protected valueService: ValueService, injector: Injector, ref: ChangeDetectorRef
-  ) {
+    ,protected schemaMgr:DontCodeSchemaManager) {
     super(loader, injector, ref);
+    if (this.schemaMgr==null)  // Sometimes it's not injected...
+      this.schemaMgr=dtcde.getSchemaManager();
   }
 
   override initCommandFlow(
@@ -38,38 +56,52 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
       throw new Error(
         'Cannot listen to changes without knowing a base position'
       );
-    const json=provider.getJsonAt(this.entityPointer.position);
+    this.reportDescription=provider.getJsonAt(this.entityPointer.position) as DontCodeReportType;
+    this.initTargetEntity ();
+    this.decomposeJsonToMultipleChanges(
+      this.entityPointer,
+      this.reportDescription
+    ); // Dont provide a special handling for initial json, but emulate a list of changes
+    this.initChangeListening(true); // Listen to all changes made in the report definition
+  }
+
+  protected initTargetEntity ():void {
+    if( this.entityPointer==null)
+      return;
     const targetInfo = this.valueService.findTargetOfProperty("for", this.entityPointer.position);
 
     if (targetInfo!=null) {
-      this.store = this.entityService.retrieveListManager(targetInfo.pointer, json);
+      this.store = this.entityService.retrieveListManager(targetInfo.pointer, this.valueService.findAtPosition(targetInfo.pointer, false));
+      this.targetEntityPointer=this.schemaMgr.generateSchemaPointer(targetInfo.pointer);
+      this.pluginHelper.initOtherChangeListening(true, this.targetEntityPointer);
     }
-    this.decomposeJsonToMultipleChanges(
-      this.entityPointer,
-      json
-    ); // Dont provide a special handling for initial json, but emulate a list of changes
-    this.initChangeListening(true); // Listen to all changes occuring after entityPointer
+
   }
 
   override ngAfterViewInit(): void {
     super.ngAfterViewInit();
     // When testing entityPointer is not defined
-    if ((this.entityPointer)&&(this.provider)) {
-      if( this.store!=null) {
-        this.dataLoading=true;
-        this.store.loadAll().then (() => {
+    this.loadTargetEntities();
+  }
+
+  private loadTargetEntities() {
+    if ((this.entityPointer) && (this.provider)) {
+      if (this.store != null) {
+        this.dataLoading = true;
+        this.store.searchAndPrepareEntities(this.reportDescription?.sortedBy, this.reportDescription?.groupedBy).then(() => {
           // eslint-disable-next-line no-restricted-syntax
-          console.debug ("Loaded entities");
-          this.dataLoading=false;
-          this.updateSubFieldsValues ();
+          console.debug("Loaded entities");
+          this.reportEntityData = this.store?.prepared ?? new DontCodeStorePreparedEntities<never>([]);
+          this.dataLoading = false;
+          this.updateSubFieldsValues();
           this.ref.markForCheck();
           this.ref.detectChanges();
         }, reason => {
-          this.dataLoading=false;
+          this.dataLoading = false;
         });
       }
     } else {
-      throw new Error ('Cannot create subcomponents before initCommandFlow is called');
+      throw new Error('Cannot create subcomponents before initCommandFlow is called');
     }
   }
 
@@ -80,7 +112,6 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
       }
     }
   }
-
 
   providesTemplates(key?: string): TemplateList {
     throw new Error('Method not implemented.');
@@ -96,6 +127,7 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
 
   override getValue(): any {
     // Just ignore as well
+    // eslint-disable-next-line no-restricted-syntax
     console.debug("getValue() called for ReportEntity");
     return undefined;
   }
@@ -120,6 +152,9 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
         default:
           this.title = change.value;
       }
+    } else if ((this.targetEntityPointer!=null) && (change?.pointer?.isSubItemOf(this.targetEntityPointer)!=null)) {
+      // A change has been made in the entity itself
+      this.loadTargetEntities();
     }
   }
 
@@ -131,3 +166,4 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
   }
 
 }
+
