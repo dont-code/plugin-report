@@ -3,24 +3,44 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ReportTableComponent} from './report-table.component';
 import {EntityListManager, PluginCommonModule} from "@dontcode/plugin-common";
 import {DontCodeTestManager, dtcde, TestProviderInterface} from "@dontcode/core";
+import {By} from "@angular/platform-browser";
+import {Component, NgModule, TemplateRef} from "@angular/core";
+import {CommonModule} from "@angular/common";
+import {TableModule} from "primeng/table";
 
 describe('ReportTableComponent', () => {
   let component: ReportTableComponent;
   let fixture: ComponentFixture<ReportTableComponent>;
+  let containerFixture: ComponentFixture<TestInsertComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ReportTableComponent],
-      imports: [PluginCommonModule.forRoot()]
+      declarations: [ReportTableComponent, TestInsertComponent],
+      imports: [PluginCommonModule.forRoot(), CommonModule, TableModule]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ReportTableComponent);
-    component = fixture.componentInstance;
+/*    fixture = TestBed.createComponent(TestInsertComponent);
     fixture.detectChanges();
+    await fixture.whenStable();
+    const componentRef = fixture.componentInstance.dynamicInsertPoint.createComponent<ReportTableComponent>(
+      ReportTableComponent, {
+        injector:fixture.debugElement.injector,
+        ngModuleRef: createNgModule(TestBed.ngModule as Type<any>)
+      }
+    );
+    component = componentRef.instance;*/
+    fixture = TestBed.createComponent(ReportTableComponent);
+    component=fixture.componentInstance;
+
+    TestInsertComponent.COMPONENT_TO_TEST=component;
+    containerFixture = TestBed.createComponent(TestInsertComponent);
+    containerFixture.detectChanges();
+    fixture.detectChanges();
+    await containerFixture.whenStable();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(containerFixture.componentInstance).toBeTruthy();
   });
 
   it('should display a grouped table', (done) => {
@@ -57,13 +77,13 @@ describe('ReportTableComponent', () => {
       }
     });
 
-    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+/*    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
       name: 'Test1',
       value: 123
     }, {
       name: 'Test2',
       value: 456
-    }]);
+    }]);*/
 
     const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba/as/baa'));
     const entityPointer = provider.calculatePointerFor('creation/reports/ba/as/baa');
@@ -75,8 +95,8 @@ describe('ReportTableComponent', () => {
     }, 20, 5).then (value => {
       if( !value) done("No column values are updated");
 
-      fixture.detectChanges();
-      fixture.whenStable().then(() => {
+      containerFixture.detectChanges();
+      containerFixture.whenStable().then(() => {
         component.setValue(new TestEntityListManager ('creation/entities/aa',[{
           name: 'Test1',
           value: 123
@@ -85,10 +105,20 @@ describe('ReportTableComponent', () => {
           value: 456
         }]));
 
-        fixture.detectChanges();
+        containerFixture.detectChanges();
+        containerFixture.whenStable().then(() => {
+          expect(component.cleanedTableData).toHaveLength(2);
+          expect(component.cols).toHaveLength(2);
+          const tableRows = containerFixture.debugElement.queryAll(By.css('tr'));
+          expect(tableRows).toHaveLength(3);
+
+
+          expect(tableRows[1].children[0].nativeElement.textContent.trim()).toEqual('Test1');
+          done();
+
+        }).catch(error => done(error));
       });
-    }).catch(error => done(error))
-      .finally(() => done());
+    }).catch(error => done(error));
   });
 
 });
@@ -100,3 +130,18 @@ class TestEntityListManager extends EntityListManager {
   }
 
 }
+
+@Component({
+  selector: 'dontcode-test-insert',
+  template: '<ng-container *ngTemplateOutlet="getTemplate()"></ng-container>'
+})
+class TestInsertComponent {
+
+  public static COMPONENT_TO_TEST:ReportTableComponent;
+
+  getTemplate (): TemplateRef<any>|null {
+    return TestInsertComponent.COMPONENT_TO_TEST.providesTemplates().forFullView;
+  }
+
+}
+

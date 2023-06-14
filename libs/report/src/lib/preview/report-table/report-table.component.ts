@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@angular/core';
 import {
   Change,
-  CommandProviderInterface, DontCodeModel,
-  DontCodeModelManager,
+  CommandProviderInterface,
+  DontCodeModel,
   DontCodeModelPointer,
-  DontCodeSchemaManager, dtcde
+  DontCodeSchemaManager,
+  dtcde
 } from "@dontcode/core";
 import {
   ComponentLoaderService,
@@ -12,7 +13,8 @@ import {
   EntityListManager,
   PluginBaseComponent,
   PossibleTemplateList,
-  TemplateList, ValueService
+  TemplateList,
+  ValueService
 } from "@dontcode/plugin-common";
 
 @Component({
