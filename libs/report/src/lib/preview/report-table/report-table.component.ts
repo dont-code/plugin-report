@@ -158,11 +158,30 @@ export class ReportTableComponent extends PluginBaseComponent {
     }
   }
 
+  /**
+   * Ease the display of grouped values by mapping them per column
+   */
   calculateGroupedValuesByField () {
-    if ((this.value==null) || (this.value.prepared==null) || (this.value.prepared.groupedByEntities==null) || (this.value.prepared.groupedByEntities.values==null)) {
+    this.groupedValuesByField.clear();
+    if (this.value?.prepared?.groupedByEntities?.values!=null) {
       this.groupedValuesByField.clear();
-    } else {
-      this.groupedValuesByField = this.value.prepared.groupedByEntities.values;
+
+      for (const groupKey of this.value.prepared.groupedByEntities.values.keys()) {
+        const values=this.value.prepared.groupedByEntities.values.get(groupKey)??[];
+        for (const value of values) {
+          let listOfValues = this.groupedValuesByField.get(groupKey)?.get(value.forAggregate.of);
+          if( listOfValues==null) {
+            listOfValues=new Array <DontCodeStoreGroupedByValues>();
+            let groupDelimiter=this.groupedValuesByField.get(groupKey);
+            if (groupDelimiter==null) {
+              groupDelimiter = new Map<any, DontCodeStoreGroupedByValues[]>();
+              this.groupedValuesByField.set(groupKey, groupDelimiter);
+            }
+            groupDelimiter.set(value.forAggregate.of, listOfValues);
+          }
+        listOfValues.push(value);
+        }
+      }
     }
   }
 

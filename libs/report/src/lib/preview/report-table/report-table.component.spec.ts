@@ -91,8 +91,8 @@ describe('ReportTableComponent', () => {
           }], undefined, new DontCodeStoreGroupedByEntities(
             new DontCodeStoreGroupby('type', [dontCodeStoreAggregate]),
             new Map ([
-              ['Type1',new Map([[dontCodeStoreAggregate.of,[new DontCodeStoreGroupedByValues(dontCodeStoreAggregate, 123+234)]]])],
-              ['Type2',new Map([[dontCodeStoreAggregate.of,[new DontCodeStoreGroupedByValues(dontCodeStoreAggregate, 456)]]])]
+              ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregate, 123+234)]],
+              ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregate, 456)]]
             ]
           ))
         )));
