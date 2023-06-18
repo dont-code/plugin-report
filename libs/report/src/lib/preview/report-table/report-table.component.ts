@@ -1,10 +1,11 @@
 import {ChangeDetectorRef, Component, Injector, TemplateRef, ViewChild} from '@angular/core';
 import {
   Change,
+  ChangeType,
   CommandProviderInterface,
   DontCodeModel,
   DontCodeModelPointer,
-  DontCodeSchemaManager,
+  DontCodeSchemaManager, DontCodeStoreGroupedByValues,
   dtcde
 } from "@dontcode/core";
 import {
@@ -31,12 +32,15 @@ export class ReportTableComponent extends PluginBaseComponent {
 
   title="";
 
-  provider: CommandProviderInterface | null = null;
+  override value: EntityListManager<any>|null = null;
+
   targetEntityPointer: DontCodeModelPointer | null = null;
   reportPointer:DontCodeModelPointer|null=null;
   cleanedTableData: any[]=[];
 
   entityNamePropertyName?:string|null;
+  groupRowsBy: string | undefined;
+  groupedValuesByField= new Map<any, Map<any, DontCodeStoreGroupedByValues[]>>();
 
   constructor(protected valueService:ValueService, protected schemaMgr:DontCodeSchemaManager, protected loader:ComponentLoaderService, protected ref:ChangeDetectorRef, protected injector:Injector) {
     super(loader, injector, ref);
@@ -78,6 +82,10 @@ export class ReportTableComponent extends PluginBaseComponent {
     }
 
     this.initChangeListening(true); // Listen to all changes occuring after entityPointer
+    this.decomposeJsonToMultipleChanges(
+      this.entityPointer,
+      this.provider?.getJsonAt(this.entityPointer.position)
+    ); // Dont provide a special handling for initial json, but emulate a list of changes
   }
 
   templateOf(col: PrimeColumn, value: any): TemplateRef<any> {
@@ -89,12 +97,13 @@ export class ReportTableComponent extends PluginBaseComponent {
     throw new Error('No component or template to display ' + col.type);
   }
 
-  override setValue(val: EntityListManager) {
+  override setValue(val: EntityListManager<any>) {
     super.setValue(val);
     if( val.entities!=null)
       this.cleanedTableData=val.entities;
     else
       this.cleanedTableData=[];
+    this.calculateGroupedValuesByField ();
   }
     /**
    * Make the appropriate display updates whenever a change is received
@@ -132,10 +141,40 @@ export class ReportTableComponent extends PluginBaseComponent {
         this.ref.markForCheck();
         this.ref.detectChanges();
       });
+    } else if (this.entityPointer!=null) {
+
+      if (change.pointer?.isSubItemOf(this.entityPointer)==='groupedBy') {
+        // We have changed the grouping
+        if( change.type==ChangeType.DELETE) {
+          this.groupRowsBy=undefined;
+          this.groupedValuesByField.clear();
+        }else {
+          this.groupRowsBy=change.value[0].of;
+          this.calculateGroupedValuesByField ();
+        }
+
+
+      }
     }
   }
 
+  calculateGroupedValuesByField () {
+    if ((this.value==null) || (this.value.prepared==null) || (this.value.prepared.groupedByEntities==null) || (this.value.prepared.groupedByEntities.values==null)) {
+      this.groupedValuesByField.clear();
+    } else {
+      this.groupedValuesByField = this.value.prepared.groupedByEntities.values;
+    }
+  }
+
+  retrieveGroupedByValuesFor(groupingValue: any, field:string): DontCodeStoreGroupedByValues[] {
+    const ret= this.groupedValuesByField.get(groupingValue)?.get(field);
+    if (ret!=null)
+      return ret;
+    else
+      return [];
+  }
 }
+
 
 class PrimeColumn {
   field: string;
