@@ -22,7 +22,12 @@
       <tr class="p-rowgroup-footer">
         <td *ngFor="let col of columns">
           <ng-container *ngFor="let value of retrieveGroupedByValuesFor (rowData[groupRowsBy], col.field)">
-            <ng-container><span pTooltip="{{value.value | beautifier}}">{{value.value | beautifier : 50}}</span></ng-container>
+            <ng-container *ngIf="isTemplate(col, value.forAggregate.operation)">
+              <div>{{value.forAggregate.operation.toString()}}:&nbsp;<ng-container *ngTemplateOutlet="templateOf(col, value.value)"></ng-container></div>
+            </ng-container>
+            <ng-container *ngIf="!isTemplate(col, value.forAggregate.operation)">
+              <div pTooltip="{{value.forAggregate.operation.toString()}}:&nbsp;{{value.value | beautifier}}">{{value.forAggregate.operation.toString()}}:&nbsp;{{value.value | beautifier : 50}}</div>
+             </ng-container>
           </ng-container>
         </td>
       </tr>

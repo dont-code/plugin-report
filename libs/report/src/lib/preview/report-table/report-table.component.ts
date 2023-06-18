@@ -3,9 +3,11 @@ import {
   Change,
   ChangeType,
   CommandProviderInterface,
+  DontCodeGroupOperationType,
   DontCodeModel,
   DontCodeModelPointer,
-  DontCodeSchemaManager, DontCodeStoreGroupedByValues,
+  DontCodeSchemaManager,
+  DontCodeStoreGroupedByValues,
   dtcde
 } from "@dontcode/core";
 import {
@@ -191,6 +193,13 @@ export class ReportTableComponent extends PluginBaseComponent {
       return ret;
     else
       return [];
+  }
+
+  isTemplate(col: PrimeColumn, operation: DontCodeGroupOperationType):boolean {
+    if( (col.component==null) || (operation==DontCodeGroupOperationType.Count))
+      return false;
+    else
+      return true;
   }
 }
 
