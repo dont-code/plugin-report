@@ -201,6 +201,10 @@ export class ReportTableComponent extends PluginBaseComponent {
     else
       return true;
   }
+
+  areGroupsDefined():boolean {
+    return (this.groupRowsBy!=null);
+  }
 }
 
 

@@ -74,8 +74,8 @@ describe('ReportTableComponent', () => {
   it('should display a non grouped table',async () => {
     dtcde.getModelManager().resetContent(MODEL);
 
-    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/bb/as/bba'));
-    const entityPointer = provider.calculatePointerFor('creation/reports/bb/as/bba');
+    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba/as/baa'));
+    const entityPointer = provider.calculatePointerFor('creation/reports/ba/as/baa');
     component.initCommandFlow(provider, entityPointer);
 
     await DontCodeTestManager.waitUntilTrueAndEmit(() => {
