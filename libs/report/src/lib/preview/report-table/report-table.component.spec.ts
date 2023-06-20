@@ -306,12 +306,12 @@ const MODEL = {
       'bb': {
         title: 'SumTest',
         for: 'Entity1',
+        groupedBy: MODEL_SUMTEST_GROUPBY,
         as: {
           'bba': {
             title: 'Sum Table',
             type: 'Table',
             of: 'value',
-            groupedBy: MODEL_SUMTEST_GROUPBY
           }
         }
       }

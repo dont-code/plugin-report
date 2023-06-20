@@ -83,7 +83,7 @@ export class ReportTableComponent extends PluginBaseComponent {
       }
     }
 
-    this.initChangeListening(true); // Listen to all changes occuring after entityPointer
+    this.initChangeListening(true); // Listen to all changes occuring after report display definition
     this.decomposeJsonToMultipleChanges(
       this.entityPointer,
       this.provider?.getJsonAt(this.entityPointer.position)
@@ -145,14 +145,13 @@ export class ReportTableComponent extends PluginBaseComponent {
       });
     } else if (this.entityPointer!=null) {
 
-      if (change.pointer?.isSubItemOf(this.entityPointer)==='groupedBy') {
+        // The user changed the table values itself
+      if (change.pointer?.isSubItemOf(this.entityPointer)==='title') {
         // We have changed the grouping
         if( change.type==ChangeType.DELETE) {
-          this.groupRowsBy=undefined;
-          this.groupedValuesByField.clear();
+          this.title='';
         }else {
-          this.groupRowsBy=change.value[0].of;
-          this.calculateGroupedValuesByField ();
+          this.title=change.value;
         }
 
 
@@ -166,7 +165,7 @@ export class ReportTableComponent extends PluginBaseComponent {
   calculateGroupedValuesByField () {
     this.groupedValuesByField.clear();
     if (this.value?.prepared?.groupedByEntities?.values!=null) {
-      this.groupedValuesByField.clear();
+      this.groupRowsBy=this.value?.prepared.groupedByEntities.groupInfo.of;
 
       for (const groupKey of this.value.prepared.groupedByEntities.values.keys()) {
         const values=this.value.prepared.groupedByEntities.values.get(groupKey)??[];
