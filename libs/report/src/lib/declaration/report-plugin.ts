@@ -36,7 +36,7 @@ export class ReportPlugin implements Plugin {
         {
           location: {
             parent: DontCodeModel.APP_REPORTS_DISPLAY,
-            id: 'Type',
+            id: 'type',
             values: ['Table']
           },
           class: {
@@ -46,8 +46,7 @@ export class ReportPlugin implements Plugin {
         },
         {
           location: {
-            parent: DontCodeModel.APP_REPORTS_DISPLAY,
-            id: ''
+            parent: DontCodeModel.APP_REPORTS_DISPLAY
           },
           class: {
             name: 'ReportDisplayComponent',

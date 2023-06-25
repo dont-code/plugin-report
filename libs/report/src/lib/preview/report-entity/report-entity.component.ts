@@ -135,7 +135,7 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
 
   handleChange(change: Change): void {
     if (change?.pointer?.positionInSchema === DontCodeModel.APP_REPORTS_DISPLAY) {
-      this.updateSubFieldsWithChange(change, DontCodeModel.APP_REPORTS_DISPLAY_NODE).then(value => {
+      this.updateSubFieldsWithChange(change, null).then(value => {
         if (value != null) {
           this.updateSubFieldsValues();
           this.ref.markForCheck();

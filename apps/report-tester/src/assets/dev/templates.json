@@ -84,35 +84,57 @@
     ]
   },
   {
-    "name": "Test Tables",
+    "name": "Simple Table",
     "sequence": [
       {
         "position": "creation/reports/f",
         "type": "ADD",
         "value": {
-          "title": "Table Reports",
+          "title": "Simple Table Report",
           "for": "Basic Entity",
-          "groupedBy": [{
-            "label": "By Type",
-            "of": "Type",
-            "display": [{
-              "operation": "Count",
-              "of": "Value",
-              "label": "Elements #"
-            },
-            {
-              "operation": "Minimum",
-              "of": "Amount",
-              "label": "Min cost"
-            }]
-          }],
-          "as": [{
-           "fh": {
+          "as": {
+           "fa": {
               "type": "Table",
              "title": "Infos"
             }
           }
-          ]
+        }
+      }
+    ]
+  },
+  {
+    "name": "GroupedBy Table",
+    "sequence": [
+      {
+        "position": "creation/reports/g",
+        "type": "ADD",
+        "value": {
+          "title": "Complex Table Reports",
+          "for": "Basic Entity",
+          "groupedBy": {
+            "ga": {
+              "label": "By Type",
+              "of": "Type",
+              "display": {
+                "gaa":{
+                  "operation": "Sum",
+                  "of": "Value",
+                  "label": "Sum"
+                },
+                "gab":{
+                  "operation": "Minimum",
+                  "of": "Amount",
+                  "label": "Min cost"
+                  }
+                }
+              }
+            },
+          "as": {
+            "gb": {
+              "type": "Table",
+              "title": "Infos"
+            }
+          }
         }
       }
     ]
