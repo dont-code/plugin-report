@@ -118,24 +118,24 @@ describe('ReportTableComponent', () => {
       if (!value) throw new Error ("No column values are updated");
       else {
           // We pre-populate all fields to just test the display
-        const dontCodeStoreAggregates = [
-          new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Sum),
-          new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Minimum),
-          new DontCodeStoreAggregate('name', DontCodeGroupOperationType.Count),
-          new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Maximum)
-        ];
+        const dontCodeStoreAggregates = {
+          "aaa":new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Sum),
+          "aab":new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Minimum),
+          "aac":new DontCodeStoreAggregate('name', DontCodeGroupOperationType.Count),
+          "aad":new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Maximum)
+        };
         component.setValue(new TestEntityListManager('creation/entities/aa', new DontCodeStorePreparedEntities<any>(
           sortedData, undefined, new DontCodeStoreGroupedByEntities(
             new DontCodeStoreGroupby('type', dontCodeStoreAggregates),
             new Map ([
-              ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[0], 123+234),
-              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[1], 123),
-              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[2], 2),
-              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[3], 234)]],
-              ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[0], 456),
-                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[1], 456),
-                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[2], 1),
-                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[3], 456)]],
+              ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aaa, 123+234),
+              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aab, 123),
+              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aac, 2),
+              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aad, 234)]],
+              ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aaa, 456),
+                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aab, 456),
+                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aac, 1),
+                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aad, 456)]],
             ]
           ))
         )));
@@ -169,24 +169,24 @@ describe('ReportTableComponent', () => {
       if (!value) throw new Error ("No column values are updated");
       else {
         // We pre-populate all fields to just test the display
-        const dontCodeStoreAggregates = [
-          new DontCodeStoreAggregate('amount', DontCodeGroupOperationType.Sum),
-          new DontCodeStoreAggregate('date', DontCodeGroupOperationType.Minimum),
-          new DontCodeStoreAggregate('amount', DontCodeGroupOperationType.Average),
-          new DontCodeStoreAggregate('date', DontCodeGroupOperationType.Maximum)
-        ];
+        const dontCodeStoreAggregates = {
+          "aba":new DontCodeStoreAggregate('amount', DontCodeGroupOperationType.Sum),
+          "abb":new DontCodeStoreAggregate('date', DontCodeGroupOperationType.Minimum),
+          "abc":new DontCodeStoreAggregate('amount', DontCodeGroupOperationType.Average),
+          "abd":new DontCodeStoreAggregate('date', DontCodeGroupOperationType.Maximum)
+        };
         component.setValue(new TestEntityListManager('creation/entities/aa', new DontCodeStorePreparedEntities<any>(
           sortedData, undefined, new DontCodeStoreGroupedByEntities(
             new DontCodeStoreGroupby('type', dontCodeStoreAggregates),
             new Map ([
-                ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[0], {amount: 250+43, currencyCode: 'EUR'}),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[1], new Date(2023, 5, 12)),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[2], {amount: (250+43)/2, currencyCode: 'EUR'}),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[3], new Date(2023, 5, 14))]],
-                ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[0], {amount: 125, currencyCode: 'EUR'}),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[1], new Date(2023, 4, 14)),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[2], {amount: 125, currencyCode: 'EUR'}),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[3], new Date(2023, 4, 14))]],
+                ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aba, {amount: 250+43, currencyCode: 'EUR'}),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.abb, new Date(2023, 5, 12)),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.abc, {amount: (250+43)/2, currencyCode: 'EUR'}),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.abd, new Date(2023, 5, 14))]],
+                ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aba, {amount: 125, currencyCode: 'EUR'}),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.abb, new Date(2023, 4, 14)),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.abc, {amount: 125, currencyCode: 'EUR'}),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.abd, new Date(2023, 4, 14))]],
               ]
             ))
         )));
@@ -219,18 +219,18 @@ describe('ReportTableComponent', () => {
       if (!value) throw new Error("No column values are updated");
       else {
         // We pre-populate all fields to just test the display
-        const dontCodeStoreAggregates = [
-          new DontCodeStoreAggregate('amount', DontCodeGroupOperationType.Count),
-          new DontCodeStoreAggregate('date', DontCodeGroupOperationType.Count)
-        ];
+        const dontCodeStoreAggregates = {
+          "aca":new DontCodeStoreAggregate('amount', DontCodeGroupOperationType.Count),
+          "acb":new DontCodeStoreAggregate('date', DontCodeGroupOperationType.Count)
+        };
         component.setValue(new TestEntityListManager('creation/entities/aa', new DontCodeStorePreparedEntities<any>(
           sortedData, undefined, new DontCodeStoreGroupedByEntities(
             new DontCodeStoreGroupby('type', dontCodeStoreAggregates),
             new Map([
-                ['Type1', [new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[0], 2),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[1], 2)]],
-                ['Type2', [new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[0], 1),
-                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates[1], 1)]]
+                ['Type1', [new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aca, 2),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.acb, 2)]],
+                ['Type2', [new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aca, 1),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.acb, 1)]]
               ]
             ))
         )));
