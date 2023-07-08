@@ -71,8 +71,8 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
     const targetInfo = this.valueService.findTargetOfProperty("for", this.entityPointer.position);
 
     if (targetInfo!=null) {
-      this.store = this.entityService.retrieveListManager(targetInfo.pointer, this.valueService.findAtPosition(targetInfo.pointer, false));
       this.targetEntityPointer=this.schemaMgr.generateSchemaPointer(targetInfo.pointer);
+      this.store = this.entityService.retrieveListManager(this.targetEntityPointer, this.valueService.findAtPosition(targetInfo.pointer, false));
       this.pluginHelper.initOtherChangeListening(true, this.targetEntityPointer);
     }
 
