@@ -95,13 +95,15 @@ jobs:
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
-          nx run report-tester:build:production --base-href "https://dont-code.net/plugin-report/"
+          nx run report-tester:build:production --output-path="dist/apps/report-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-report/${{env.stage}}/"
       - if: ${{ success() && matrix.browser == 'chromium' && ( inputs.deploy == true)}}
-        uses: crazy-max/ghaction-github-pages@v3.0.0
+        uses: gcollin/ghaction-github-pages@main
         with:
           repo: dont-code/plugin-report
           target_branch: gh-pages # The branch the action should deploy to.
           build_dir: dist/apps/report-tester
+          keep_history: true
+          multiple_sites: true
           jekyll: false
         env:
           GITHUB_TOKEN: ${{secrets.DONTCODE_ACTIONS_TOKEN }}

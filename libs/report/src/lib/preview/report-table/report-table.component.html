@@ -19,7 +19,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="groupfooter" let-rowData let-columns="columns">
-      <tr *ngIf="areGroupsDefined()" class="p-rowgroup-footer">
+      <tr *ngIf="areGroupsDefined()" class="rowgroup-footer font-bold font-italic">
         <td *ngFor="let col of columns">
           <ng-container *ngFor="let value of retrieveGroupedByValuesFor (rowData[groupRowsBy!], col.field)">
             <ng-container *ngIf="isTemplate(col, value.forAggregate.operation)">

@@ -156,7 +156,113 @@ describe('ReportEntityComponent', () => {
     fixture.detectChanges();
 
     DontCodeTestManager.waitUntilTrue(() => {
-      return (component.reportEntityData?.groupedByEntities?.values?.length==2);
+      return (component.reportEntityData?.groupedByEntities?.values?.size==2);
+    }, done);
+  });
+
+  it ('should manage cross table grouping', (done) => {
+
+    dtcde.getModelManager().resetContent({
+      creation: {
+        entities: {
+          'aa': {
+            name: 'SimpleEntity',
+            fields: {
+              'aaa': {
+                name: 'Name',
+                type: 'string'
+              },
+              'aab': {
+                name: 'Price1',
+                type: 'number'
+              },
+              'aac': {
+                name: 'Price2',
+                type: 'number'
+              },
+              'aad': {
+                name: 'Price3',
+                type: 'number'
+              },
+
+            }
+          }
+        },
+        reports: {
+          'ba': {
+            title: 'CrossTest',
+            for: 'SimpleEntity',
+            groupedBy: [{
+              "label": "By Shop",
+              "of": "number",
+              "show":"OnlyLowest",
+              "display": [{
+                "operation": "Count",
+                "of": "Name",
+                "label": "#"
+                },
+                {
+                  "operation": "Sum",
+                  "of": "Price1",
+                  "label": "Price1 Sum"
+                },
+                {
+                  "operation": "Sum",
+                  "of": "Price2",
+                  "label": "Price2 Sum"
+                },
+                {
+                  "operation": "Sum",
+                  "of": "Price3",
+                  "label": "Price3 Sum"
+                }]
+            }],
+            as: {
+              'baa': {
+                title: 'Simple Table',
+                type: 'Table'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+      name: 'Test1',
+      Price1: 123,
+      Price2: 112,
+      Price3: 150
+    }, {
+      name: 'Test2',
+      Price1: 456,
+      Price2: 560,
+      Price3: 340
+    },{
+      name: 'Test3',
+      Price1: 156,
+      Price2: 260,
+      Price3: 340
+    }, {
+      name: 'Test4',
+      Price1: 183,
+      Price2: 123,
+      Price3: 90
+    }, {
+      name: 'Test5',
+      Price1: 46,
+      Price2: 50,
+      Price3: 130
+    }]);
+
+    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
+    const entityPointer = provider.calculatePointerFor('creation/reports/ba');
+    component.initCommandFlow(provider, entityPointer);
+
+    fixture.detectChanges();
+
+    DontCodeTestManager.waitUntilTrue(() => {
+      return (component.reportEntityData?.groupedByEntities?.values?.size==3);
     }, done);
   });
 });
