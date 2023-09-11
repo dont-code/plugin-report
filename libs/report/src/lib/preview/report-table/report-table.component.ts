@@ -166,6 +166,10 @@ export class ReportTableComponent extends PluginBaseComponent {
     this.groupedValuesByField.clear();
     if (this.value?.prepared?.groupedByEntities?.values!=null) {
       this.groupRowsBy=this.value?.prepared.groupedByEntities.groupInfo.of;
+        // In case of special column is created to enable filtering
+      if (this.value?.prepared.groupedByEntities.groupInfo.show!=null) {
+        this.groupRowsBy=this.value?.prepared.groupedByEntities.groupInfo.show.valueOf();
+      }
 
       for (const groupKey of this.value.prepared.groupedByEntities.values.keys()) {
         const values=this.value.prepared.groupedByEntities.values.get(groupKey)??[];

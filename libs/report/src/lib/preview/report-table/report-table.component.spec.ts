@@ -322,7 +322,7 @@ const MODEL = {
 
 class TestEntityListManager extends EntityListManager<any> {
   constructor(position:string, prepared: DontCodeStorePreparedEntities<any>) {
-    super(position, {}, dtcde.getStoreManager());
+    super(dtcde.getSchemaManager().generateSchemaPointer(position), {}, dtcde.getStoreManager(), dtcde.getModelManager());
     this.entities=prepared.sortedData;
     this.prepared=prepared;
   }

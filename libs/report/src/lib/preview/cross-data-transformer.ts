@@ -16,13 +16,15 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
   constructor(protected modelMgr: DontCodeModelManager, protected groupByColumn:string, protected affectedColumns:string[], protected groupType: DontCodeReportGroupType, protected entityPosition:DontCodeModelPointer) {
   }
   postLoadingTransformation(source: any[]): T[] {
+    if (this.groupType.show==null) return source;
+
     const ret = new Array<T>();
     const fieldMapping = this.calculateFieldMapping();
     // Adds the groupBy Column to each element so that standard groupBy works
     for (const srcItem of source) {
       const newItem = structuredClone(srcItem);
        // Let's calculate the relevant column
-      newItem["groupByColumn"]=this.calculateRelevantColumn(srcItem, fieldMapping);
+      newItem[this.groupType.show.valueOf()]=this.calculateRelevantColumn(srcItem, fieldMapping);
       ret.push(newItem);
     }
     return ret;
@@ -30,6 +32,7 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
 
   private calculateRelevantColumn(srcItem: any, fieldMapping:Map<string, string>):string|undefined {
     let value=undefined;
+    let extractValue=undefined;
     let column=undefined;
     const metadataPerField=new Map<string, DataTransformationInfo>();
 
@@ -41,23 +44,25 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
           metadata=new DataTransformationInfo();
           metadataPerField.set(field, metadata);
         }
-        const valSrc=this.modelMgr.extractValue(srcItem[field], metadata)
+        const fieldId=fieldMapping.get(field);
+        if (fieldId==null) return undefined;
+        const valueField=this.modelMgr.extractValue(srcItem[field], metadata, fieldsPosition.subItemPointer(fieldId));
         if (value == null) {
-          value = valSrc;
+          value = srcItem[field]
+          extractValue=valueField;
           column=field;
         }
         else {
-          const fieldId=fieldMapping.get(field);
-          if (fieldId==null) return undefined;
-          const extractValue = this.modelMgr.extractValue(value, metadata, fieldsPosition.subItemPointer(fieldId));
           if (this.groupType.show==DontCodeReportGroupShowType.OnlyLowest) {
-            if (value < extractValue) {
-              value = valSrc;
+            if (valueField < extractValue) {
+              value = srcItem[field];
+              extractValue=valueField;
               column=field;
             }
           }else { // Keep only Highest values
-            if (value > extractValue) {
-              value = valSrc;
+            if (valueField > extractValue) {
+              value = srcItem[field];
+              extractValue=valueField;
               column=field;
             }
           }
@@ -73,7 +78,7 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
     if (entityDesc.fields!=null) {
       for (const field of Object.entries(entityDesc.fields)) {
         if (field[1].name!=null) {
-          ret.set(field[0], field[1].name);
+          ret.set(field[1].name,field[0]);
         }
       }
     }

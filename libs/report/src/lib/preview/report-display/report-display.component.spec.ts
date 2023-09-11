@@ -97,7 +97,7 @@ describe('ReportDisplayComponent', () => {
 
 class TestEntityListManager extends EntityListManager {
   constructor(position:string, values:any[]) {
-    super(position, {}, dtcde.getStoreManager());
+    super(dtcde.getSchemaManager().generateSchemaPointer(position), {}, dtcde.getStoreManager(), dtcde.getModelManager());
     this.entities=values as never[];
   }
 

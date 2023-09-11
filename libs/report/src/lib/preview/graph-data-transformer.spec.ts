@@ -2,7 +2,16 @@ import {GraphDataTransformer} from "./graph-data-transformer";
 import {firstValueFrom, map} from "rxjs";
 import {dtcde} from "@dontcode/core";
 import {EntityListManager} from "@dontcode/plugin-common";
+import {ChartType} from "chart.js";
+import {AutocolorsOptions} from "chartjs-plugin-autocolors-typescript";
 
+// Declare the plugin otherwise Graph Data Transformer won't compile
+declare module 'chart.js' {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface PluginOptionsByType<TType extends ChartType> {
+    autocolors?: AutocolorsOptions
+  }
+}
 
 describe('GraphDataTransformer', () => {
   // let component: ReportDisplayComponent;
@@ -18,6 +27,7 @@ describe('GraphDataTransformer', () => {
   beforeEach(() => {
    // fixture = TestBed.createComponent(ReportDisplayComponent);
    // component = fixture.componentInstance;
+
   });
 
   it('should translate simple data', () => {
@@ -142,7 +152,7 @@ describe('GraphDataTransformer', () => {
 
 class TestEntityListManager extends EntityListManager {
   constructor(position:string, values:any[]) {
-    super(position, {}, dtcde.getStoreManager());
+    super(dtcde.getSchemaManager().generateSchemaPointer(position), {}, dtcde.getStoreManager(), dtcde.getModelManager());
     this.entities=values as never[];
   }
 
