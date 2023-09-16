@@ -1,8 +1,7 @@
 import {Core, DontCodeModel, Plugin, PluginConfig} from '@dontcode/core';
 import {_adapters, Chart} from "chart.js";
-import autocolors from 'chartjs-plugin-autocolors-typescript';
 import {StdDateAdapter} from "chartjs-adapter-date-std";
-
+import autocolorPlugin from "chartjs-plugin-autocolors-typescript";
 /**
  * This plugin demonstrate 2 things:
  * - how to declare a new field type that can be selected in the Builder and how to manage the display and edition of this new type in the Previewer.
@@ -11,7 +10,7 @@ import {StdDateAdapter} from "chartjs-adapter-date-std";
 export class ReportPlugin implements Plugin {
 
   constructor() {
-    Chart.register(autocolors);
+    Chart.register(autocolorPlugin);
     _adapters._date.override( StdDateAdapter.chartJsStandardAdapter());
   }
 
@@ -37,14 +36,24 @@ export class ReportPlugin implements Plugin {
         {
           location: {
             parent: DontCodeModel.APP_REPORTS_DISPLAY,
-            id: ''
+            id: 'type',
+            values: ['Table']
+          },
+          class: {
+            name: 'ReportTableComponent',
+            source: 'report',
+          },
+        },
+        {
+          location: {
+            parent: DontCodeModel.APP_REPORTS_DISPLAY
           },
           class: {
             name: 'ReportDisplayComponent',
             source: 'report',
           },
-        },
-      ],
+        }
+      ]
     };
   }
 

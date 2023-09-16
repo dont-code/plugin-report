@@ -1,3 +1,4 @@
+import 'core-js/stable/structured-clone'; // Some bugs in Jest disable the native call
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {ReportEntityComponent} from './report-entity.component';
@@ -64,11 +65,11 @@ describe('ReportEntityComponent', () => {
     });
 
     DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
-      name: 'Test1',
-      value: 123
+      Name: 'Test1',
+      Value: 123
     }, {
-      name: 'Test2',
-      value: 456
+      Name: 'Test2',
+      Value: 456
     }]);
 
     const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
@@ -79,6 +80,197 @@ describe('ReportEntityComponent', () => {
 
     DontCodeTestManager.waitUntilTrue(() => {
       return (component.getSubFields().length == 1) && (component.title=='Test');
+    }, done);
+  });
+
+
+  it ('should manage grouping', (done) => {
+
+    dtcde.getModelManager().resetContent({
+      creation: {
+        entities: {
+          'aa': {
+            name: 'SimpleEntity',
+            fields: {
+              'aaa': {
+                name: 'Name',
+                type: 'string'
+              },
+              'aab': {
+                name: 'Value',
+                type: 'number'
+              }
+            }
+          }
+        },
+        reports: {
+          'ba': {
+            title: 'SimpleTest',
+            for: 'SimpleEntity',
+            groupedBy: {
+              'bab':{
+                of: "Name",
+                label: "By Name",
+                display: {
+                  'baba':  {
+                    operation: "Count",
+                    of:"Name",
+                    label:"#"
+                  },
+                  'babb':  {
+                    operation:"Sum",
+                    of:"Value",
+                    label:"Sum"
+                  }
+                }
+              }
+            },
+            as: {
+              'baa': {
+                title: 'Simple Table',
+                type: 'Table'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+      Name: 'Test1',
+      Value: 123
+    }, {
+      Name: 'Test2',
+      Value: 456
+    },{
+      Name: 'Test1',
+      Value: 432
+    }, {
+      Name: 'Test2',
+      Value: 124
+    }, {
+      Name: 'Test2',
+      Value: 642
+    }]);
+
+    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
+    const entityPointer = provider.calculatePointerFor('creation/reports/ba');
+    component.initCommandFlow(provider, entityPointer);
+
+    fixture.detectChanges();
+
+    DontCodeTestManager.waitUntilTrue(() => {
+      return (component.reportEntityData?.groupedByEntities?.values?.size==2);
+    }, done);
+  });
+
+  it ('should manage cross table grouping', (done) => {
+
+    dtcde.getModelManager().resetContent({
+      creation: {
+        entities: {
+          'aa': {
+            name: 'SimpleEntity',
+            fields: {
+              'aaa': {
+                name: 'Name',
+                type: 'string'
+              },
+              'aab': {
+                name: 'Price1',
+                type: 'number'
+              },
+              'aac': {
+                name: 'Price2',
+                type: 'number'
+              },
+              'aad': {
+                name: 'Price3',
+                type: 'number'
+              },
+
+            }
+          }
+        },
+        reports: {
+          'ba': {
+            title: 'CrossTest',
+            for: 'SimpleEntity',
+            groupedBy: {
+              'baa':{
+                label: "By Shop",
+                of: "number",
+                show:"OnlyLowest",
+                display: {
+                  'baaa':{
+                    operation: "Count",
+                    of: "Name",
+                    label: "#"
+                  },
+                  'baab':{
+                    operation: "Sum",
+                    of: "Price1",
+                    label: "Price1 Sum"
+                  },
+                  'baac':{
+                    operation: "Sum",
+                    of: "Price2",
+                    label: "Price2 Sum"
+                  },
+                  'baad':{
+                    operation: "Sum",
+                    of: "Price3",
+                    label: "Price3 Sum"
+                  }
+                }
+              }
+            },
+            as: {
+              'bab': {
+                title: 'Grouped Table',
+                type: 'Table'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+      Name: 'Test1',
+      Price1: 123,
+      Price2: 112,
+      Price3: 150
+    }, {
+      Name: 'Test2',
+      Price1: 456,
+      Price2: 560,
+      Price3: 340
+    },{
+      Name: 'Test3',
+      Price1: 156,
+      Price2: 260,
+      Price3: 340
+    }, {
+      Name: 'Test4',
+      Price1: 183,
+      Price2: 123,
+      Price3: 90
+    }, {
+      Name: 'Test5',
+      Price1: 46,
+      Price2: 50,
+      Price3: 130
+    }]);
+
+    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba'));
+    const entityPointer = provider.calculatePointerFor('creation/reports/ba');
+    component.initCommandFlow(provider, entityPointer);
+
+    fixture.detectChanges();
+
+    DontCodeTestManager.waitUntilTrue(() => {
+      return (component.reportEntityData?.groupedByEntities?.values?.size==3);
     }, done);
   });
 });

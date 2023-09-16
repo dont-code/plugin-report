@@ -1,5 +1,10 @@
 import {Component, TemplateRef, ViewChild,} from '@angular/core';
-import {AbstractDynamicComponent, PossibleTemplateList, TemplateList,} from '@dontcode/plugin-common';
+import {
+  AbstractDynamicComponent,
+  EntityListManager,
+  PossibleTemplateList,
+  TemplateList,
+} from '@dontcode/plugin-common';
 import {
   Change,
   ChangeType,
@@ -8,11 +13,12 @@ import {
   DontCodeModelManager,
   DontCodeModelPointer,
   DontCodeReportDisplayType,
-  DontCodeSchemaManager,
+  DontCodeSchemaManager, DontCodeStorePreparedEntities,
   PreviewHandler
 } from "@dontcode/core";
 import {GraphDataTransformer} from "../graph-data-transformer";
 import {Observable} from "rxjs";
+import {ChartData, ChartOptions, ChartType, DefaultDataPoint} from "chart.js";
 
 @Component({
   selector: 'dontcode-report-field',
@@ -29,16 +35,16 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
   provider: CommandProviderInterface | null = null;
   graphModelPointer: DontCodeModelPointer | null = null;
   protected dataTransformer:GraphDataTransformer;
-  data$: Observable<any>;
-  option$: Observable<any>;
+  chartData$: Observable<ChartData<ChartType, DefaultDataPoint<ChartType>>>;
+  chartOption$: Observable<ChartOptions<ChartType>>;
 
   entityNamePropertyName?:string|null;
 
   constructor(protected modelMgr:DontCodeModelManager, protected schemaMgr:DontCodeSchemaManager) {
     super();
     this.dataTransformer = new GraphDataTransformer(modelMgr);
-    this.data$ = this.dataTransformer.dataObservable();
-    this.option$ = this.dataTransformer.optionObservable ();
+    this.chartData$ = this.dataTransformer.dataObservable();
+    this.chartOption$ = this.dataTransformer.optionObservable ();
   }
 
   providesTemplates(): TemplateList {
@@ -49,14 +55,14 @@ export class ReportDisplayComponent extends AbstractDynamicComponent implements 
     return new PossibleTemplateList(false, true, true);
   }
 
-  setValue(val: any) {
+  override setValue(val: EntityListManager) {
     super.setValue(val);
-    // The store can be sent
-    if( (val!=null) && (val.entities!=null)) {
+    // We can directly receive the store instead of the array of values
+/*    if( (val!=null) && (val.entities!=null)) {
       val = val.entities;
-    }
+    }*/
     this.dataTransformer.updateSourceData(val);
-    //this.data = (val as EntityListManager).entities;
+
   }
 
   initCommandFlow(provider: CommandProviderInterface, pointer: DontCodeModelPointer): void {

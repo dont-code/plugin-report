@@ -1,18 +1,11 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ReportDisplayComponent } from './report-display.component';
-import { PluginCommonModule } from '@dontcode/plugin-common';
-import {
-  Change,
-  CommandProviderInterface,
-  DontCodeModelPointer,
-  DontCodeSchemaManager,
-  DontCodeTestManager,
-  dtcde
-} from "@dontcode/core";
-import {firstValueFrom, map, Observable} from "rxjs";
+import {ReportDisplayComponent} from './report-display.component';
+import {EntityListManager, PluginCommonModule} from '@dontcode/plugin-common';
+import {DontCodeTestManager, dtcde, TestProviderInterface} from "@dontcode/core";
+import {firstValueFrom, map} from "rxjs";
 
-describe('ReportFieldComponent', () => {
+describe('ReportDisplayComponent', () => {
   let component: ReportDisplayComponent;
   let fixture: ComponentFixture<ReportDisplayComponent>;
 
@@ -80,18 +73,18 @@ describe('ReportFieldComponent', () => {
 
     fixture.detectChanges();
     fixture.whenStable().then(() => {
-      component.setValue([{
+      component.setValue(new TestEntityListManager ('creation/entities/aa',[{
         name: 'Test1',
         value: 123
       }, {
         name: 'Test2',
         value: 456
-      }]);
+      }]));
 
       fixture.detectChanges();
     });
 
-    return firstValueFrom(component.data$.pipe(map(data => {
+    return firstValueFrom(component.chartData$.pipe(map(data => {
       expect (data.labels).not.toBeNull();
       expect (component.entityNamePropertyName).toEqual ("name");
       return data;
@@ -102,22 +95,10 @@ describe('ReportFieldComponent', () => {
 
 });
 
-class TestProviderInterface implements CommandProviderInterface {
-  constructor(protected toRet: any) {}
-
-  getJsonAt(position: string): any {
-    return this.toRet;
+class TestEntityListManager extends EntityListManager {
+  constructor(position:string, values:any[]) {
+    super(dtcde.getSchemaManager().generateSchemaPointer(position), {}, dtcde.getStoreManager(), dtcde.getModelManager());
+    this.entities=values as never[];
   }
 
-  receiveCommands(position?: string, lastItem?: string): Observable<Change> {
-    return new Observable<Change>();
-  }
-
-  calculatePointerFor(position: string): DontCodeModelPointer {
-    return dtcde.getSchemaManager().generateSchemaPointer(position);
-  }
-
-  getSchemaManager(): DontCodeSchemaManager {
-    return dtcde.getSchemaManager();
-  }
 }
