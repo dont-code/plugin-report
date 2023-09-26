@@ -22,11 +22,3 @@ Cypress.on('uncaught:exception', (err) => {
   }
   return true;
 });
-
-Cypress.on('before:browser:launch', (browser = {}, launchOptions) => {
-  if (browser.family === 'chromium') {
-    launchOptions.args.push('--disable-gpu')
-  }
-
-  return launchOptions
-})
