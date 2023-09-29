@@ -4,6 +4,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ReportEntityComponent} from './report-entity.component';
 import {PluginCommonModule} from '@dontcode/plugin-common';
 import {
+  Action,
   Change,
   CommandProviderInterface,
   DontCodeModelPointer,
@@ -292,5 +293,9 @@ class TestProviderInterface implements CommandProviderInterface {
 
   getSchemaManager(): DontCodeSchemaManager {
     return dtcde.getSchemaManager();
+  }
+
+  sendCommand(action: Action): Promise<void> {
+    return Promise.resolve(undefined);
   }
 }
