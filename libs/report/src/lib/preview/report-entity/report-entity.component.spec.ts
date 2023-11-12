@@ -270,9 +270,38 @@ describe('ReportEntityComponent', () => {
 
     fixture.detectChanges();
 
-    DontCodeTestManager.waitUntilTrue(() => {
+    DontCodeTestManager.waitUntilTrueAndEmit(() => {
       return (component.reportEntityData?.groupedByEntities?.values?.size==3);
-    }, done);
+    }).then(correct => {
+      if (correct) {
+        // Check that the data is correct
+        const values = component.reportEntityData?.groupedByEntities?.values;
+        if (values!=null) {
+          expect(values.get('Price1')?.length).toEqual(4);
+          expect(values.get('Price1')?.[0].value).toEqual(2);
+          expect(values.get('Price1')?.[1].value).toEqual(156+46);
+          expect(values.get('Price2')?.[0].value).toEqual(1);
+          expect(values.get('Price2')?.[2].value).toEqual(112);
+          expect(values.get('Price3')?.[0].value).toEqual(2);
+          expect(values.get('Price3')?.[3].value).toEqual(340+90);
+
+          expect(component.reportEntityData.sortedData.length).toEqual(5);
+          expect((component.reportEntityData.sortedData[0] as any).OnlyLowest).toEqual('Price2');
+          expect((component.reportEntityData.sortedData[1] as any).OnlyLowest).toEqual('Price3');
+          expect((component.reportEntityData.sortedData[2] as any).OnlyLowest).toEqual('Price1');
+          expect((component.reportEntityData.sortedData[3] as any).OnlyLowest).toEqual('Price3');
+          expect((component.reportEntityData.sortedData[4] as any).OnlyLowest).toEqual('Price1');
+
+          done();
+        }else {
+          done("No values calculated");
+        }
+      }else {
+        done("Couldn't calculate values of Grouped Entities.");
+      }
+    });
+
+    // Now checks that the data is correct
   });
 });
 
