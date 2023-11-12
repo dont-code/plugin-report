@@ -13,7 +13,7 @@ import {
  * Transform columns values into rows depending on the graph configuration
  */
 export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>{
-  constructor(protected modelMgr: DontCodeModelManager, protected groupByColumn:string, protected affectedColumns:string[], protected groupType: DontCodeReportGroupType, protected entityPosition:DontCodeModelPointer) {
+  constructor(protected modelMgr: DontCodeModelManager, protected affectedColumns:string[], protected groupType: DontCodeReportGroupType, protected entityPosition:DontCodeModelPointer) {
   }
   postLoadingTransformation(source: any[]): T[] {
     if (this.groupType.show==null) return source;
