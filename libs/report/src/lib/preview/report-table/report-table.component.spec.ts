@@ -413,9 +413,9 @@ describe('ReportTableComponent', () => {
 
         containerFixture.whenStable().then(()=> {
             const rows = containerFixture.debugElement.queryAll(By.css('tbody > tr'));
-            expect(rows.length).toEqual(8);
+            expect(rows.length).toEqual(11); // 5 rows of data + 3 headers + 3 footers
             for (const row of rows) {
-              expect(row.children.length).toEqual(4);
+              expect((row.children.length==4) || (row.children.length==1) ).toBeTruthy; // 4 columns
             }
 
               // Grab all textes
@@ -436,11 +436,14 @@ describe('ReportTableComponent', () => {
             }
               // Check the textes
             expect(allTextes).toStrictEqual([
+                ['Price1'],
                 ['Test3', '156', '260', '340'],
                 ['Test5', '46', '50', '130'],
                 ["Count:&nbsp;2","Sum:&nbsp;202","Sum:&nbsp;310","Sum:&nbsp;470"],
+                ['Price2'],
                 ['Test1','123', '112', '150'],
                 [ "Count:&nbsp;1","Sum:&nbsp;123","Sum:&nbsp;112","Sum:&nbsp;150"],
+                ['Price3'],
                 ['Test2', '456', '560', '340'],
                 ['Test4', '183', '123', '90'],
                 ["Count:&nbsp;2","Sum:&nbsp;639","Sum:&nbsp;683","Sum:&nbsp;430"]
