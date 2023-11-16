@@ -172,13 +172,13 @@ describe('ReportTableComponent', () => {
         expect(component.cleanedTableData).toHaveLength(3);
         expect(component.cols).toHaveLength(5);
         const tableRows = containerFixture.debugElement.queryAll(By.css('tr'));
-        expect(tableRows).toHaveLength(6);
+        expect(tableRows).toHaveLength(8); // 4 rows of data + 2 header + 2 footer
 
           // Check the groupedby have been calculated correctly
-        expect(tableRows[3].children[0].nativeElement.textContent.trim()).toEqual('Count:\xa02');
-        expect(tableRows[3].children[2].nativeElement.textContent.trim()).toEqual('Sum:\xa0357Minimum:\xa0123Maximum:\xa0234');
-        expect(tableRows[5].children[0].nativeElement.textContent.trim()).toEqual('Count:\xa01');
-        expect(tableRows[5].children[2].nativeElement.textContent.trim()).toEqual('Sum:\xa0456Minimum:\xa0456Maximum:\xa0456');
+        expect(tableRows[4].children[0].nativeElement.textContent.trim()).toEqual('Count:\xa02');
+        expect(tableRows[4].children[2].nativeElement.textContent.trim()).toEqual('Sum:\xa0357Minimum:\xa0123Maximum:\xa0234');
+        expect(tableRows[7].children[0].nativeElement.textContent.trim()).toEqual('Count:\xa01');
+        expect(tableRows[7].children[2].nativeElement.textContent.trim()).toEqual('Sum:\xa0456Minimum:\xa0456Maximum:\xa0456');
       }
 
     });
@@ -223,13 +223,13 @@ describe('ReportTableComponent', () => {
         expect(component.cleanedTableData).toHaveLength(3);
         expect(component.cols).toHaveLength(5);
         const tableRows = containerFixture.debugElement.queryAll(By.css('tr'));
-        expect(tableRows).toHaveLength(6);
+        expect(tableRows).toHaveLength(8);
 
         // Check the groupedby have been calculated correctly
-        expect(tableRows[3].children[3].nativeElement.textContent.trim()).toEqual('Sum:\xa0€293.00Average:\xa0€146.50');
-        expect(tableRows[3].children[4].nativeElement.textContent.trim()).toEqual('Minimum:\xa006/12/2023Maximum:\xa006/14/2023');
-        expect(tableRows[5].children[3].nativeElement.textContent.trim()).toEqual('Sum:\xa0€125.00Average:\xa0€125.00');
-        expect(tableRows[5].children[4].nativeElement.textContent.trim()).toEqual('Minimum:\xa005/14/2023Maximum:\xa005/14/2023');
+        expect(tableRows[4].children[3].nativeElement.textContent.trim()).toEqual('Sum:\xa0€293.00Average:\xa0€146.50');
+        expect(tableRows[4].children[4].nativeElement.textContent.trim()).toEqual('Minimum:\xa006/12/2023Maximum:\xa006/14/2023');
+        expect(tableRows[7].children[3].nativeElement.textContent.trim()).toEqual('Sum:\xa0€125.00Average:\xa0€125.00');
+        expect(tableRows[7].children[4].nativeElement.textContent.trim()).toEqual('Minimum:\xa005/14/2023Maximum:\xa005/14/2023');
       }
 
     });
@@ -268,13 +268,13 @@ describe('ReportTableComponent', () => {
         expect(component.cleanedTableData).toHaveLength(3);
         expect(component.cols).toHaveLength(5);
         const tableRows = containerFixture.debugElement.queryAll(By.css('tr'));
-        expect(tableRows).toHaveLength(6);
+        expect(tableRows).toHaveLength(8);
 
         // Check the groupedby have been calculated correctly
-        expect(tableRows[3].children[3].nativeElement.textContent.trim()).toEqual('Count:\xa02');
-        expect(tableRows[3].children[4].nativeElement.textContent.trim()).toEqual('Count:\xa02');
-        expect(tableRows[5].children[3].nativeElement.textContent.trim()).toEqual('Count:\xa01');
-        expect(tableRows[5].children[4].nativeElement.textContent.trim()).toEqual('Count:\xa01');
+        expect(tableRows[4].children[3].nativeElement.textContent.trim()).toEqual('Count:\xa02');
+        expect(tableRows[4].children[4].nativeElement.textContent.trim()).toEqual('Count:\xa02');
+        expect(tableRows[7].children[3].nativeElement.textContent.trim()).toEqual('Count:\xa01');
+        expect(tableRows[7].children[4].nativeElement.textContent.trim()).toEqual('Count:\xa01');
       }
 
     });
