@@ -69,6 +69,30 @@ function retrieveHierarchy(elt: DebugElement, toRet?:any): any {
   return toRet;
 }
 
+
+/**
+ * To ease comparison, we just extract the cost value if the element is a Json representing a Price
+ * @param innerHTML
+ */
+function transformDisplayedValue(innerHTML: string): string {
+  try {
+    let startRet="Sum:&nbsp;";  // We do as if
+    if (innerHTML.indexOf(startRet)==-1) { // It's not a Sum
+      startRet='';
+    }
+    let startAmount=innerHTML.indexOf('"amount": ');
+    if( startAmount!=-1) {
+      startAmount = startAmount+10;
+      const endAmount = innerHTML.indexOf(',', startAmount+1);
+      return startRet+innerHTML.substring(startAmount, endAmount);
+    } else {
+      return innerHTML;
+    }
+  } catch (e) {
+    return innerHTML;
+  }
+}
+
 describe('ReportTableComponent', () => {
   let component: ReportTableComponent;
   let fixture: ComponentFixture<ReportTableComponent>;
@@ -145,7 +169,7 @@ describe('ReportTableComponent', () => {
     }, 20, 5).then(async value => {
       if (!value) throw new Error ("No column values are updated");
       else {
-          // We pre-populate all fields to just test the display
+        // We pre-populate all fields to just test the display
         const dontCodeStoreAggregates = {
           "aaa":new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Sum),
           "aab":new DontCodeStoreAggregate('value', DontCodeGroupOperationType.Minimum),
@@ -156,16 +180,16 @@ describe('ReportTableComponent', () => {
           sortedData, undefined, new DontCodeStoreGroupedByEntities(
             new DontCodeStoreGroupby('type', dontCodeStoreAggregates),
             new Map ([
-              ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aaa, 123+234),
-              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aab, 123),
-              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aac, 2),
-              new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aad, 234)]],
-              ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aaa, 456),
-                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aab, 456),
-                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aac, 1),
-                new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aad, 456)]],
-            ]
-          ))
+                ['Type1',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aaa, 123+234),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aab, 123),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aac, 2),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aad, 234)]],
+                ['Type2',[new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aaa, 456),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aab, 456),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aac, 1),
+                  new DontCodeStoreGroupedByValues(dontCodeStoreAggregates.aad, 456)]],
+              ]
+            ))
         )));
 
         containerFixture.detectChanges();
@@ -174,7 +198,7 @@ describe('ReportTableComponent', () => {
         const tableRows = containerFixture.debugElement.queryAll(By.css('tr'));
         expect(tableRows).toHaveLength(8); // 4 rows of data + 2 header + 2 footer
 
-          // Check the groupedby have been calculated correctly
+        // Check the groupedby have been calculated correctly
         expect(tableRows[4].children[0].nativeElement.textContent.trim()).toEqual('Count:\xa02');
         expect(tableRows[4].children[2].nativeElement.textContent.trim()).toEqual('Sum:\xa0357Minimum:\xa0123Maximum:\xa0234');
         expect(tableRows[7].children[0].nativeElement.textContent.trim()).toEqual('Count:\xa01');
@@ -385,7 +409,7 @@ describe('ReportTableComponent', () => {
     component.initCommandFlow(provider, entityPointer);
 
     const entityListManager = new EntityListManager(provider.calculatePointerFor(
-      'creation/entities/aa'),
+        'creation/entities/aa'),
       dtcde.getModelManager().findAtPosition('creation/entities/aa'),
       dtcde.getStoreManager(), dtcde.getModelManager());
 
@@ -412,56 +436,55 @@ describe('ReportTableComponent', () => {
         containerFixture.detectChanges();
 
         containerFixture.whenStable().then(()=> {
-            const rows = containerFixture.debugElement.queryAll(By.css('tbody > tr'));
-            expect(rows.length).toEqual(11); // 5 rows of data + 3 headers + 3 footers
-            for (const row of rows) {
-              expect((row.children.length==4) || (row.children.length==1) ).toBeTruthy; // 4 columns
+          const rows = containerFixture.debugElement.queryAll(By.css('tbody > tr'));
+          expect(rows.length).toEqual(11); // 5 rows of data + 3 headers + 3 footers
+          for (const row of rows) {
+            expect((row.children.length==4) || (row.children.length==1) ).toBeTruthy; // 4 columns
+          }
+
+          // Grab all textes
+          const allTextes=new Array<Array<string>>();
+          for (const row of rows) {
+            const textes=new Array<string>();
+            for (const span of row.queryAll(By.css('span'))) {
+              textes.push( span.nativeNode.innerHTML);
             }
-
-              // Grab all textes
-            const allTextes=new Array<Array<string>>();
-            for (const row of rows) {
-              const textes=new Array<string>();
-              for (const span of row.queryAll(By.css('span'))) {
-                textes.push( span.nativeNode.innerHTML);
+            if (textes.length==0) {
+              // For grouping it's div and not span
+              for (const div of row.queryAll(By.css('div'))) {
+                textes.push( div.nativeNode.innerHTML);
               }
-              if (textes.length==0) {
-                  // For grouping it's div and not span
-                for (const div of row.queryAll(By.css('div'))) {
-                  textes.push( div.nativeNode.innerHTML);
-                }
-              }
-              allTextes.push(textes);
-
             }
-              // Check the textes
-            expect(allTextes).toStrictEqual([
-                ['Price1'],
-                ['Test3', '156', '260', '340'],
-                ['Test5', '46', '50', '130'],
-                ["Count:&nbsp;2","Sum:&nbsp;202","Sum:&nbsp;310","Sum:&nbsp;470"],
-                ['Price2'],
-                ['Test1','123', '112', '150'],
-                [ "Count:&nbsp;1","Sum:&nbsp;123","Sum:&nbsp;112","Sum:&nbsp;150"],
-                ['Price3'],
-                ['Test2', '456', '560', '340'],
-                ['Test4', '183', '123', '90'],
-                ["Count:&nbsp;2","Sum:&nbsp;639","Sum:&nbsp;683","Sum:&nbsp;430"]
-              ]);
+            allTextes.push(textes);
 
-            done();
-          }).catch(reason => {
-            done(reason);
-          });
-        } else {
-          done("No values calculated");
-        }
+          }
+          // Check the textes
+          expect(allTextes).toStrictEqual([
+            ['Price1'],
+            ['Test3', '156', '260', '340'],
+            ['Test5', '46', '50', '130'],
+            ["Count:&nbsp;2","Sum:&nbsp;202","Sum:&nbsp;310","Sum:&nbsp;470"],
+            ['Price2'],
+            ['Test1','123', '112', '150'],
+            [ "Count:&nbsp;1","Sum:&nbsp;123","Sum:&nbsp;112","Sum:&nbsp;150"],
+            ['Price3'],
+            ['Test2', '456', '560', '340'],
+            ['Test4', '183', '123', '90'],
+            ["Count:&nbsp;2","Sum:&nbsp;639","Sum:&nbsp;683","Sum:&nbsp;430"]
+          ]);
+
+          done();
+        }).catch(reason => {
+          done(reason);
+        });
+      } else {
+        done("No values calculated");
+      }
     }).catch(reason => {
       done (reason);
     });
 
   });
-
   it ('should display OnlyLowest elements with plugin types', (done) => {
 
     dtcde.getModelManager().resetContent({
@@ -671,8 +694,8 @@ const MODEL = {
             type: 'Text'
           },
           'aaaa': {
-            name:'type',
-            type:'Text'
+            name: 'type',
+            type: 'Text'
           },
           'aab': {
             name: 'value',
@@ -714,31 +737,7 @@ const MODEL = {
       }
     }
   }
-};
-
-/**
- * To ease comparison, we just extract the cost value if the element is a Json representing a Price
- * @param innerHTML
- */
-function transformDisplayedValue(innerHTML: string): string {
-  try {
-    let startRet="Sum:&nbsp;";  // We do as if 
-    if (innerHTML.indexOf(startRet)==-1) { // It's not a Sum
-      startRet='';
-    }
-    let startAmount=innerHTML.indexOf('"amount": ');
-    if( startAmount!=-1) {
-      startAmount = startAmount+10;
-      const endAmount = innerHTML.indexOf(',', startAmount+1);
-      return startRet+innerHTML.substring(startAmount, endAmount);
-    } else {
-      return innerHTML;
-    }
-  } catch (e) {
-    return innerHTML;
-  }
 }
-
 
 class TestEntityListManager extends EntityListManager<any> {
   constructor(position:string, prepared: DontCodeStorePreparedEntities<any>) {
@@ -755,11 +754,9 @@ class TestEntityListManager extends EntityListManager<any> {
 })
 class TestInsertComponent {
 
-  public static COMPONENT_TO_TEST:ReportTableComponent;
+  public static COMPONENT_TO_TEST: ReportTableComponent;
 
-  getTemplate (): TemplateRef<any>|null {
+  getTemplate(): TemplateRef<any> | null {
     return TestInsertComponent.COMPONENT_TO_TEST.providesTemplates().forFullView;
   }
-
 }
-
