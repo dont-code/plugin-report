@@ -462,6 +462,191 @@ describe('ReportTableComponent', () => {
 
   });
 
+  it ('should display OnlyLowest elements with plugin types', (done) => {
+
+    dtcde.getModelManager().resetContent({
+      creation: {
+        entities: {
+          'aa': {
+            name: 'PriceEntity',
+            fields: {
+              'aaa': {
+                name: 'Name',
+                type: 'string'
+              },
+              'aab': {
+                name: 'Price1',
+                type: 'Price'
+              },
+              'aac': {
+                name: 'Price2',
+                type: 'Price'
+              },
+              'aad': {
+                name: 'Price3',
+                type: 'Price'
+              },
+
+            }
+          }
+        },
+        reports: {
+          'ba': {
+            title: 'CrossTest Price',
+            for: 'PriceEntity',
+            groupedBy: {
+              'baa':{
+                label: "By Shop",
+                of: "Price",
+                show:"OnlyLowest",
+                display: {
+                  'baaa':{
+                    operation: "Count",
+                    of: "Name",
+                    label: "#"
+                  },
+                  'baab':{
+                    operation: "Sum",
+                    of: "Price1",
+                    label: "Price1 Sum"
+                  },
+                  'baac':{
+                    operation: "Sum",
+                    of: "Price2",
+                    label: "Price2 Sum"
+                  },
+                  'baad':{
+                    operation: "Sum",
+                    of: "Price3",
+                    label: "Price3 Sum"
+                  }
+                }
+              }
+            },
+            as: {
+              'bab': {
+                title: 'Grouped Table',
+                type: 'Table'
+              }
+            }
+          }
+        }
+      }
+    });
+
+    DontCodeTestManager.addDummyProviderFromContent("creation/entities/aa", [{
+      Name: 'Test1',
+      Price1: { cost: {amount:123, currencyCode:'EUR'}},
+      Price2: { cost: {amount:112, currencyCode:'EUR'}},
+      Price3: { cost: {amount:150, currencyCode:'EUR'}}
+    }, {
+      Name: 'Test2',
+      Price1: { cost: {amount:456, currencyCode:'EUR'}},
+      Price2: { cost: {amount:560, currencyCode:'EUR'}},
+      Price3: { cost: {amount:340, currencyCode:'EUR'}}
+    },{
+      Name: 'Test3',
+      Price1: { cost: {amount:156, currencyCode:'EUR'}},
+      Price2: { cost: {amount:260, currencyCode:'EUR'}},
+      Price3: { cost: {amount:340, currencyCode:'EUR'}}
+    }, {
+      Name: 'Test4',
+      Price1: { cost: {amount:183, currencyCode:'EUR'}},
+      Price2: { cost: {amount:123, currencyCode:'EUR'}},
+      Price3: { cost: {amount:90, currencyCode:'EUR'}}
+    }, {
+      Name: 'Test5',
+      Price1: { cost: {amount:46, currencyCode:'EUR'}},
+      Price2: { cost: {amount:50, currencyCode:'EUR'}},
+      Price3: { cost: {amount:130, currencyCode:'EUR'}}
+    }], dtcde.getModelManager());
+
+    const provider = new TestProviderInterface(dtcde.getModelManager().findAtPosition('creation/reports/ba/as/bab'));
+    const entityPointer = provider.calculatePointerFor('creation/reports/ba/as/bab');
+    const reportDescription = dtcde.getModelManager().findAtPosition('creation/reports/ba') as DontCodeReportType;
+    component.initCommandFlow(provider, entityPointer);
+
+    const entityListManager = new EntityListManager(provider.calculatePointerFor(
+        'creation/entities/aa'),
+      dtcde.getModelManager().findAtPosition('creation/entities/aa'),
+      dtcde.getStoreManager(), dtcde.getModelManager());
+
+    entityListManager.searchAndPrepareEntities(undefined, reportDescription.groupedBy,
+      new CrossDataTransformer(dtcde.getModelManager(),
+        ['Price1', 'Price2', 'Price3'],
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        Object.values(reportDescription.groupedBy!)[0] as DontCodeReportGroupType,
+        dtcde.getSchemaManager().generateSchemaPointer('creation/entities/aa')
+      )
+    ).catch(reason => {
+      done (reason);
+    });
+
+    component.setValue(entityListManager);
+
+    DontCodeTestManager.waitUntilTrueAndEmit(() => {
+      return (component.groupedValuesByField?.size==3);
+    }).then(correct => {
+      if (correct) {
+        // Check that the data is correct
+        expect(component.cols.length).toEqual(4);
+        expect(component.groupRowsBy).toEqual('OnlyLowest');
+        containerFixture.detectChanges();
+
+        containerFixture.whenStable().then(()=> {
+          const rows = containerFixture.debugElement.queryAll(By.css('tbody > tr'));
+          expect(rows.length).toEqual(11); // 5 rows of data + 3 headers + 3 footers
+          for (const row of rows) {
+            expect((row.children.length==4) || (row.children.length==1) ).toBeTruthy(); // 4 columns
+          }
+
+          // Grab all textes
+          const allTextes=new Array<Array<string>>();
+          for (const row of rows) {
+            const textes=new Array<string>();
+            for (const span of row.queryAll(By.css('span'))) {
+              textes.push( transformDisplayedValue (span.nativeNode.innerHTML));
+            }
+            if (textes.length==0) {
+              // For grouping it's div and not span
+              for (const div of row.queryAll(By.css('div'))) {
+                textes.push( transformDisplayedValue(div.nativeNode.innerHTML));
+              }
+            }
+            allTextes.push(textes);
+
+          }
+          // Check the texts
+          // Please note that as we don't have the CommerceModule, it's the json value that is being displayed
+          // So we're going to parse the Json and extract the cost value to ease comparison
+
+          expect(allTextes).toStrictEqual([
+            ['Price1'],
+            ['Test3', '156', '260', '340'],
+            ['Test5', '46', '50', '130'],
+            ["Count:&nbsp;2","Sum:&nbsp;202","Sum:&nbsp;310","Sum:&nbsp;470"],
+            ['Price2'],
+            ['Test1','123', '112', '150'],
+            [ "Count:&nbsp;1","Sum:&nbsp;123","Sum:&nbsp;112","Sum:&nbsp;150"],
+            ['Price3'],
+            ['Test2', '456', '560', '340'],
+            ['Test4', '183', '123', '90'],
+            ["Count:&nbsp;2","Sum:&nbsp;639","Sum:&nbsp;683","Sum:&nbsp;430"]
+          ]);
+
+          done();
+        }).catch(reason => {
+          done(reason);
+        });
+      } else {
+        done("No values calculated");
+      }
+    }).catch(reason => {
+      done (reason);
+    });
+
+  });
+
 });
 
 const MODEL_SUMTEST_GROUPBY=[{
@@ -530,6 +715,29 @@ const MODEL = {
     }
   }
 };
+
+/**
+ * To ease comparison, we just extract the cost value if the element is a Json representing a Price
+ * @param innerHTML
+ */
+function transformDisplayedValue(innerHTML: string): string {
+  try {
+    let startRet="Sum:&nbsp;";  // We do as if 
+    if (innerHTML.indexOf(startRet)==-1) { // It's not a Sum
+      startRet='';
+    }
+    let startAmount=innerHTML.indexOf('"amount": ');
+    if( startAmount!=-1) {
+      startAmount = startAmount+10;
+      const endAmount = innerHTML.indexOf(',', startAmount+1);
+      return startRet+innerHTML.substring(startAmount, endAmount);
+    } else {
+      return innerHTML;
+    }
+  } catch (e) {
+    return innerHTML;
+  }
+}
 
 
 class TestEntityListManager extends EntityListManager<any> {
