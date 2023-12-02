@@ -47,7 +47,7 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
         const fieldId=fieldMapping.get(field);
         if (fieldId==null) return undefined;
         const valueField=this.modelMgr.extractValue(srcItem[field], metadata, fieldsPosition.subItemPointer(fieldId));
-        if (value == null) {
+        if ((value == null) || (extractValue==null)) {
           value = srcItem[field]
           extractValue=valueField;
           column=field;

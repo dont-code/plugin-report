@@ -485,6 +485,7 @@ describe('ReportTableComponent', () => {
     });
 
   });
+
   it ('should display OnlyLowest elements with plugin types', (done) => {
 
     dtcde.getModelManager().resetContent({
@@ -572,11 +573,21 @@ describe('ReportTableComponent', () => {
       Price1: { cost: {amount:156, currencyCode:'EUR'}},
       Price2: { cost: {amount:260, currencyCode:'EUR'}},
       Price3: { cost: {amount:340, currencyCode:'EUR'}}
+    },{
+      Name: 'TestNull',
+      Price1: undefined,
+      Price2: { cost: {amount: 10, currencyCode:'EUR'}},
+      Price3: { cost: { currencyCode:'EUR'}}
     }, {
       Name: 'Test4',
       Price1: { cost: {amount:183, currencyCode:'EUR'}},
       Price2: { cost: {amount:123, currencyCode:'EUR'}},
       Price3: { cost: {amount:90, currencyCode:'EUR'}}
+    },{
+      Name: 'TestNull2',
+      Price1: undefined,
+      Price2: { cost: null},
+      Price3: { cost: { amount:5, currencyCode:'EUR'}}
     }, {
       Name: 'Test5',
       Price1: { cost: {amount:46, currencyCode:'EUR'}},
@@ -618,7 +629,7 @@ describe('ReportTableComponent', () => {
 
         containerFixture.whenStable().then(()=> {
           const rows = containerFixture.debugElement.queryAll(By.css('tbody > tr'));
-          expect(rows.length).toEqual(11); // 5 rows of data + 3 headers + 3 footers
+          expect(rows.length).toEqual(13); // 7 rows of data + 3 headers + 3 footers
           for (const row of rows) {
             expect((row.children.length==4) || (row.children.length==1) ).toBeTruthy(); // 4 columns
           }
@@ -650,11 +661,13 @@ describe('ReportTableComponent', () => {
             ["Count:&nbsp;2","Sum:&nbsp;202","Sum:&nbsp;310","Sum:&nbsp;470"],
             ['Price2'],
             ['Test1','123', '112', '150'],
-            [ "Count:&nbsp;1","Sum:&nbsp;123","Sum:&nbsp;112","Sum:&nbsp;150"],
+            ['TestNull','', '10', '{\n  "cost": {\n    "currencyCode": "EUR"\n  }\n}'],
+            [ "Count:&nbsp;2","Sum:&nbsp;123","Sum:&nbsp;122","Sum:&nbsp;150"],
             ['Price3'],
             ['Test2', '456', '560', '340'],
             ['Test4', '183', '123', '90'],
-            ["Count:&nbsp;2","Sum:&nbsp;639","Sum:&nbsp;683","Sum:&nbsp;430"]
+            ['TestNull2','', '{\n  "cost": null\n}', '5'],
+            ["Count:&nbsp;3","Sum:&nbsp;639","Sum:&nbsp;683","Sum:&nbsp;435"]
           ]);
 
           done();
