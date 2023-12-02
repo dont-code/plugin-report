@@ -486,7 +486,7 @@ describe('ReportTableComponent', () => {
 
   });
 
-  it ('should display OnlyLowest elements with plugin types', (done) => {
+  it ('should display OnlyLowest elements with plugin and null types', (done) => {
 
     dtcde.getModelManager().resetContent({
       creation: {
