@@ -20,22 +20,21 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
 
     const ret = new Array<T>();
     const fieldMapping = this.calculateFieldMapping();
+    const metadataPerField=new Map<string, DataTransformationInfo>();
     // Adds the groupBy Column to each element so that standard groupBy works
     for (const srcItem of source) {
       const newItem = structuredClone(srcItem);
        // Let's calculate the relevant column
-      newItem[this.groupType.show.valueOf()]=this.calculateRelevantColumn(srcItem, fieldMapping);
+      newItem[this.groupType.show.valueOf()]=this.calculateRelevantColumn(srcItem, fieldMapping, metadataPerField);
       ret.push(newItem);
     }
     return ret;
   }
 
-  private calculateRelevantColumn(srcItem: any, fieldMapping:Map<string, string>):string|undefined {
+  private calculateRelevantColumn(srcItem: any, fieldMapping:Map<string, string>, metadataPerField:Map<string, DataTransformationInfo>):string|undefined {
     let value=undefined;
     let extractValue=undefined;
     let column=undefined;
-    const metadataPerField=new Map<string, DataTransformationInfo>();
-
 
       const fieldsPosition=this.entityPosition.subItemPointer(DontCodeModel.APP_FIELDS_NODE);
       for (const field of this.affectedColumns) {
