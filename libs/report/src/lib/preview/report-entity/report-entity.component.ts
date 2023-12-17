@@ -202,8 +202,8 @@ export class ReportEntityComponent extends PluginBaseComponent implements AfterV
             if (columnNames.length!=0) {
               // Yes ! Let's groupBy these columns then
               this.fieldTypeTransformer=new CrossDataTransformer<never>(
-                 this.modelMgr,groupByColumn,
-                  columnNames,Object.values(this.reportDescription.groupedBy)[0] as DontCodeReportGroupType, this.targetEntityPointer);
+                this.modelMgr, columnNames,
+                Object.values(this.reportDescription.groupedBy)[0] as DontCodeReportGroupType, this.targetEntityPointer);
             }
 
           }

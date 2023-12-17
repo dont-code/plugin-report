@@ -13,29 +13,28 @@ import {
  * Transform columns values into rows depending on the graph configuration
  */
 export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>{
-  constructor(protected modelMgr: DontCodeModelManager, protected groupByColumn:string, protected affectedColumns:string[], protected groupType: DontCodeReportGroupType, protected entityPosition:DontCodeModelPointer) {
+  constructor(protected modelMgr: DontCodeModelManager, protected affectedColumns:string[], protected groupType: DontCodeReportGroupType, protected entityPosition:DontCodeModelPointer) {
   }
   postLoadingTransformation(source: any[]): T[] {
     if (this.groupType.show==null) return source;
 
     const ret = new Array<T>();
     const fieldMapping = this.calculateFieldMapping();
+    const metadataPerField=new Map<string, DataTransformationInfo>();
     // Adds the groupBy Column to each element so that standard groupBy works
     for (const srcItem of source) {
       const newItem = structuredClone(srcItem);
        // Let's calculate the relevant column
-      newItem[this.groupType.show.valueOf()]=this.calculateRelevantColumn(srcItem, fieldMapping);
+      newItem[this.groupType.show.valueOf()]=this.calculateRelevantColumn(srcItem, fieldMapping, metadataPerField);
       ret.push(newItem);
     }
     return ret;
   }
 
-  private calculateRelevantColumn(srcItem: any, fieldMapping:Map<string, string>):string|undefined {
+  private calculateRelevantColumn(srcItem: any, fieldMapping:Map<string, string>, metadataPerField:Map<string, DataTransformationInfo>):string|undefined {
     let value=undefined;
     let extractValue=undefined;
     let column=undefined;
-    const metadataPerField=new Map<string, DataTransformationInfo>();
-
 
       const fieldsPosition=this.entityPosition.subItemPointer(DontCodeModel.APP_FIELDS_NODE);
       for (const field of this.affectedColumns) {
@@ -47,7 +46,7 @@ export class CrossDataTransformer<T=never> implements DontCodeDataTransformer<T>
         const fieldId=fieldMapping.get(field);
         if (fieldId==null) return undefined;
         const valueField=this.modelMgr.extractValue(srcItem[field], metadata, fieldsPosition.subItemPointer(fieldId));
-        if (value == null) {
+        if ((value == null) || (extractValue==null)) {
           value = srcItem[field]
           extractValue=valueField;
           column=field;
