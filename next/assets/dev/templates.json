@@ -67,11 +67,11 @@
     ]
   },
   {
-    "name": "By Type graph",
+    "name": "Add graph by type",
     "sequence": [
       {
         "position": "creation/reports/e/as",
-        "type": "UPDATE",
+        "type": "ADD",
         "value": {
           "eh": {
             "type": "Bar",
