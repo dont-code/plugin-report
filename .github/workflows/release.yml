@@ -95,7 +95,7 @@ jobs:
       - name: Deploy the tester application in github pages
         if: ${{ success() && matrix.browser == 'chromium'}}
         run: |
-          nx run report-tester:build:production --output-path="dist/apps/report-tester/${{env.stage}}" --base-href "https://dont-code.net/plugin-report/${{env.stage}}/"
+          nx run report-tester:build:production --output-path="dist/apps/report-tester/${{env.stage}}" --base-href "https://run.dont-code.net/plugin-report/${{env.stage}}/"
       - if: ${{ success() && matrix.browser == 'chromium' && ( inputs.deploy == true)}}
         uses: gcollin/ghaction-github-pages@main
         with:
