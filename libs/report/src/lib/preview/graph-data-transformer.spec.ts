@@ -142,9 +142,85 @@ describe('GraphDataTransformer', () => {
       expect(result.labels).toEqual(['Test1', 'Test2']);
       expect(result.datasets).toHaveLength(1);
       expect(result.datasets[0].data).toHaveLength(2);
-      // Not sure its normal to have the objects in data...
-      expect(result.datasets[0].data).toEqual([{value:null, label:'Label'}, {value:343, label:'Label2'}]);
+      // Values has been autoamtically extracted
+      expect(result.datasets[0].data).toEqual([null, 343]);
     })))
+  });
+
+  it('should sum up values for the same label', () => {
+    const toTest = new GraphDataTransformer( dtcde.getModelManager(), {
+      type: 'Bar',
+      of: 'value',
+      by: 'type',
+      title: 'Bar Chart'
+    });
+
+    toTest.setTargetType('number');
+    toTest.setLabelFieldName('name');
+
+    toTest.updateSourceData (new TestEntityListManager('',[{
+      name: 'Test1',
+      value: 12,
+      type: 'Type1'
+    }, {
+      name: 'Test2',
+      value: 15,
+      type: 'Type2'
+    }, {
+      name: 'Test3',
+      value: 20,
+      type: 'Type1'
+    }]));
+
+    return firstValueFrom(toTest.dataObservable().pipe(map (result => {
+      expect(result.labels).not.toBeNull();
+      expect(result.labels).toEqual(['Type1', 'Type2']);
+      expect(result.datasets).toHaveLength(1);
+      expect(result.datasets[0].data).toHaveLength(2);
+      expect(result.datasets[0].data).toEqual([
+        { x:'Type1', 'y':32, src: 32},
+        { x:'Type2', 'y':15, src: 15}]); // Should be the sum of Type1 values and Type2 values
+    })));
+  });
+
+  it('should sum up money for the same label', () => {
+    const toTest = new GraphDataTransformer( dtcde.getModelManager(), {
+      type: 'Pie',
+      of: 'cost',
+      by: 'type',
+      title: 'Bar Chart'
+    });
+
+    toTest.setTargetType('Euro');
+    toTest.setLabelFieldName('name');
+
+    toTest.updateSourceData (new TestEntityListManager('',[{
+      name: 'Test1',
+      cost: {
+        amount:12,
+        currencyCode:'EUR'},
+      type: 'Type1'
+    }, {
+      name: 'Test2',
+      cost: {
+        amount: 15,
+        currencyCode:'EUR'},
+      type: 'Type2'
+    }, {
+      name: 'Test3',
+      cost: {
+        amount: 20,
+        currencyCode:'EUR'},
+      type: 'Type1'
+    }]));
+
+    return firstValueFrom(toTest.dataObservable().pipe(map (result => {
+      expect(result.labels).not.toBeNull();
+      expect(result.labels).toEqual(['Type1', 'Type2']);
+      expect(result.datasets).toHaveLength(1);
+      expect(result.datasets[0].data).toHaveLength(2);
+      expect(result.datasets[0].data).toEqual([32, 15]); // Should be the sum of Type1 values and Type2 values
+    })));
   });
 
 

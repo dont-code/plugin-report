@@ -59,43 +59,71 @@ export class GraphDataTransformer {
     let byDate = false;
 
     if (this.config.type!="Table") {
-      const data = [];
+      const data: any[] = [];
       const labels = [];
       let count = 1;
 
       const metaData = new DataTransformationInfo();
       const isBiDirectional = this.config.type!='Pie';
 
-      let globalCurrency:string|null=null;
-
       let xFieldName=this.labelFieldName;
       if( this.config.by!=null)
         xFieldName = this.config.by;
       for (const elt of (srcData.entities as any[])) {
 
-          let label;
-          if (xFieldName != null) {
-            if (elt[xFieldName] instanceof Date) byDate=true;
-            label = this.translateDateValue (elt[xFieldName]);
-          }
-          else {
-            label = count;
-            count++;
-          }
+        let label;
+        if (xFieldName != null) {
+          if (elt[xFieldName] instanceof Date) byDate=true;
+          label = this.translateDateValue (elt[xFieldName]);
+        }
+        else {
+          label = count;
+          count++;
+        }
 
+        const newVal = this.translateDateValue (this.modelMgr.extractValue (elt[this.config.of], metaData));
+          // Aggregates values for same label
+        let posLabel = labels.indexOf(label);
+        if (posLabel==-1)
           labels.push(label);
-          if (!isBiDirectional) {
-            if (isAmount) {
-              data.push(elt[this.config.of]?.amount);
-              globalCurrency=elt[this.config.of]?.currencyCode??globalCurrency;
-            }
-            else data.push(this.translateDateValue(elt[this.config.of]));
-          } else if (isAmount) {
-            // For money we store the amount AND the Currency
-            data.push({x: label, y: elt[this.config.of]?.amount, src: elt[this.config.of]});
+
+        if (!isBiDirectional) {
+          if (posLabel==-1) {
+            data.push(newVal);
           } else {
-            data.push({x: label, y:this.translateDateValue(this.modelMgr.extractValue(elt[this.config.of], metaData))});
+            if (typeof data[posLabel]=='number')  // Aggregate values for the same label
+              data[posLabel]=(newVal!=null)?data[posLabel]+newVal:data[posLabel];
+            else if (data[posLabel]==null) {
+              data[posLabel]=newVal;
+            } else {
+              // We cannot add values, so we create a separate data point
+              posLabel=-1;
+              labels.push(label);
+              data.push(newVal);
+            }
           }
+        } else {
+          if (posLabel==-1) {
+            // We store the complete object in src field in case it's an amount with currency for example
+            data.push({x: label, y: newVal, src: elt[this.config.of]});
+          } else {
+            if (typeof (data[posLabel].y)=='number') { // Aggregate values for the same label
+              data[posLabel].y=(newVal!=null)?data[posLabel].y+newVal:data[posLabel].y;
+              data[posLabel].src= this.modelMgr.modifyValues (data[posLabel].src, elt[this.config.of], metaData, 
+                (first, second) => {
+                  if (first==null) return second;
+                  if (second==null) return first;
+                  return first+second;
+                });
+            } else if (data[posLabel].y == null) {
+              data[posLabel].y=newVal;
+              data[posLabel].src = elt[this.config.of];
+            } else {
+              // There is no numeric values to sum up, so let's create a separate data point
+              data.push({x: label, y:newVal, src: elt[this.config.of]});
+            }
+          }
+        }
       }
 
       const chartData: ChartData<ChartType, DefaultDataPoint<ChartType>> = {
@@ -151,12 +179,7 @@ export class GraphDataTransformer {
                   style: 'currency',
                   currency: (context.raw as any).src.currencyCode
                 }).format(context.parsed.y);
-              } else if (globalCurrency!=null) {
-                return Intl.NumberFormat(undefined, {
-                  style: 'currency',
-                  currency: globalCurrency
-                }).format(context.parsed);
-
+              
               } else
                 return context.parsed.y;
             }
