@@ -38,13 +38,13 @@
     ]
   },
   {
-    "name": "Test Basic Report",
+    "name": "Test Basic Reports",
     "sequence": [
       {
         "position": "creation/reports/e",
         "type": "ADD",
         "value": {
-          "title": "Basic Report",
+          "title": "Basic Reports",
           "for": "Basic Entity",
           "as": {
             "ee": {
@@ -67,11 +67,11 @@
     ]
   },
   {
-    "name": "By Type graph",
+    "name": "Add graph by type",
     "sequence": [
       {
         "position": "creation/reports/e/as",
-        "type": "UPDATE",
+        "type": "ADD",
         "value": {
           "eh": {
             "type": "Bar",
@@ -133,7 +133,14 @@
             "gb": {
               "type": "Table",
               "title": "Infos"
+            },
+            "gh": {
+              "type": "Bar",
+              "of": "Value",
+              "by": "Type",
+              "title": "Grouped values by Type"
             }
+  
           }
         }
       }
